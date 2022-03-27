@@ -50,6 +50,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+
 	if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
 		if(sprite->animation() != MOVE_LEFT)
@@ -58,10 +59,8 @@ void Player::update(int deltaTime)
 		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
 			if (bJumping) {
+				stickied = true;
 				bJumping = false;
-			}
-			if (falling) {
-				falling = false;
 			}
 			posPlayer.x += 2;
 			sprite->changeAnimation(STAND_LEFT);
@@ -75,10 +74,8 @@ void Player::update(int deltaTime)
 		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
 			if (bJumping) {
+				stickied = true;
 				bJumping = false;
-			}
-			if (falling) {
-				falling = false;
 			}
 			posPlayer.x -= 2;
 			sprite->changeAnimation(STAND_RIGHT);
@@ -94,11 +91,19 @@ void Player::update(int deltaTime)
 			posPlayer.x -= 6;
 		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
+			if (bJumping) {
+				stickied = true;
+				bJumping = false;
+			}
 			posPlayer.x -= 6;
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
+			if (bJumping) {
+				stickied = true;
+				bJumping = false;
+			}
 			posPlayer.x += 6;
 			sprite->changeAnimation(STAND_LEFT);
 		}
@@ -114,7 +119,7 @@ void Player::update(int deltaTime)
 	
 	if(bJumping)
 	{
-		jumpAngle += JUMP_ANGLE_STEP;
+		if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
 		if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
 			bJumping = false;
 			posPlayer.y = startY;
@@ -130,12 +135,12 @@ void Player::update(int deltaTime)
 			if(jumpAngle > 90)
 				bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
 		}
-		 falling = true;
 	}
 	else
 	{
-			if (falling) posPlayer.y += FALL_STEP;
-			if ((map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) || (falling==false && bJumping==false))
+			if (!stickied) posPlayer.y += FALL_STEP;
+			else posPlayer.y += FALL_STEP/4;
+			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
 			{
 				if (Game::instance().getSpecialKey(GLUT_KEY_UP))
 				{
@@ -143,6 +148,7 @@ void Player::update(int deltaTime)
 					jumpAngle = 0;
 					startY = posPlayer.y;
 				}
+				stickied = false;
 			}
 	}
 	

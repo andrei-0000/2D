@@ -31,7 +31,7 @@ private:
 	TileMap *map;
 	bool can_dash = true;
 	bool falling;
-	bool stickied;
+	bool stickied = false;
 
 };
 
