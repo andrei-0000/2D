@@ -210,7 +210,7 @@ bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int
 
 	x0 = pos.x / tileSize;
 	x1 = (pos.x + size.x - 1) / tileSize;
-	y = (pos.y + size.y + 1) / tileSize;
+	y = (pos.y) / tileSize;
 	for (int x = x0; x <= x1; x++)
 	{
 		if (map[y * mapSize.x + x] != 0)
