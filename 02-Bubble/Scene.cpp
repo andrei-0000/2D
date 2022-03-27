@@ -16,7 +16,7 @@ Scene::Scene()
 {
 	map = NULL;
 	player = NULL;
-	player2 = NULL;
+
 }
 
 Scene::~Scene()
@@ -25,7 +25,6 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
-		delete player2;
 }
 
 
@@ -34,14 +33,12 @@ void Scene::init()
 	initShaders();
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
-	player2 = new Player();
+
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
 
-	player2->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player2->setPosition(glm::vec2((INIT_PLAYER_X_TILES * map->getTileSize())+10, INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player2->setTileMap(map);
+
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
@@ -51,7 +48,7 @@ void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
-	player2->update(deltaTime);
+
 }
 
 void Scene::render()
@@ -66,7 +63,7 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
 	player->render();
-	player2->render();
+
 }
 
 void Scene::initShaders()

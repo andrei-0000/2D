@@ -29,7 +29,6 @@ private:
 private:
 	TileMap *map;
 	Player *player;
-	Player* player2;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

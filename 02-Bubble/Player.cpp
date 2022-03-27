@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 #include "Player.h"
 #include "Game.h"
+#include "Keys.h"
 
 
 #define JUMP_ANGLE_STEP 4
@@ -56,6 +57,12 @@ void Player::update(int deltaTime)
 		posPlayer.x -= 2;
 		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
+			if (bJumping) {
+				bJumping = false;
+			}
+			if (falling) {
+				falling = false;
+			}
 			posPlayer.x += 2;
 			sprite->changeAnimation(STAND_LEFT);
 		}
@@ -67,13 +74,19 @@ void Player::update(int deltaTime)
 		posPlayer.x += 2;
 		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
+			if (bJumping) {
+				bJumping = false;
+			}
+			if (falling) {
+				falling = false;
+			}
 			posPlayer.x -= 2;
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 	}
 
 	//DASH
-	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
+	else if (Game::instance().getKey(Keys::Keys::D))
 	{
 		if (sprite->animation() == STAND_RIGHT && can_dash)
 			posPlayer.x += 6;
@@ -117,19 +130,20 @@ void Player::update(int deltaTime)
 			if(jumpAngle > 90)
 				bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
 		}
+		 falling = true;
 	}
 	else
 	{
-		posPlayer.y += FALL_STEP;
-		if(map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y))
-		{
-			if(Game::instance().getSpecialKey(GLUT_KEY_UP))
+			if (falling) posPlayer.y += FALL_STEP;
+			if ((map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) || (falling==false && bJumping==false))
 			{
-				bJumping = true;
-				jumpAngle = 0;
-				startY = posPlayer.y;
+				if (Game::instance().getSpecialKey(GLUT_KEY_UP))
+				{
+					bJumping = true;
+					jumpAngle = 0;
+					startY = posPlayer.y;
+				}
 			}
-		}
 	}
 	
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
