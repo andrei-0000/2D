@@ -71,6 +71,26 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 	}
+
+	//DASH
+	else if (Game::instance().getSpecialKey(GLUT_KEY_DOWN))
+	{
+		if (sprite->animation() == STAND_RIGHT && can_dash)
+			posPlayer.x += 6;
+		else if (sprite->animation() == STAND_LEFT && can_dash)
+			posPlayer.x -= 6;
+		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+		{
+			posPlayer.x -= 6;
+			sprite->changeAnimation(STAND_RIGHT);
+		}
+		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+		{
+			posPlayer.x += 6;
+			sprite->changeAnimation(STAND_LEFT);
+		}
+	}
+
 	else
 	{
 		if(sprite->animation() == MOVE_LEFT)
@@ -129,6 +149,10 @@ void Player::setPosition(const glm::vec2 &pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+bool canDash() {
+	return canDash;
 }
 
 

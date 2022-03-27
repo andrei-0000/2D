@@ -20,6 +20,7 @@ public:
 	
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
+	bool canDash();
 	
 private:
 	bool bJumping;
@@ -28,6 +29,7 @@ private:
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
+	bool can_dash = true;
 
 };
 
