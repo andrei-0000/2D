@@ -56,12 +56,14 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
 		posPlayer.x -= 2;
-		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
-		{
+		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 			if (bJumping) {
 				stickied = true;
 				bJumping = false;
 			}
+		}
+		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+		{
 			posPlayer.x += 2;
 			sprite->changeAnimation(STAND_LEFT);
 		}
@@ -71,12 +73,14 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
 		posPlayer.x += 2;
-		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
-		{
+		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (bJumping) {
 				stickied = true;
 				bJumping = false;
 			}
+		}
+		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+		{
 			posPlayer.x -= 2;
 			sprite->changeAnimation(STAND_RIGHT);
 		}
@@ -89,23 +93,33 @@ void Player::update(int deltaTime)
 			posPlayer.x += 6;
 		else if (sprite->animation() == STAND_LEFT && can_dash)
 			posPlayer.x -= 6;
-		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
-		{
+		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (bJumping) {
 				stickied = true;
 				bJumping = false;
 			}
-			posPlayer.x -= 6;
-			sprite->changeAnimation(STAND_RIGHT);
+		
+			if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+			{
+				posPlayer.x -= 6;
+				sprite->changeAnimation(STAND_RIGHT);
+			}
 		}
-		else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
-		{
+		else if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 			if (bJumping) {
 				stickied = true;
 				bJumping = false;
 			}
-			posPlayer.x += 6;
-			sprite->changeAnimation(STAND_LEFT);
+
+			if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+			{
+				if (bJumping) {
+					stickied = true;
+					bJumping = false;
+				}
+				posPlayer.x += 6;
+				sprite->changeAnimation(STAND_LEFT);
+			}
 		}
 	}
 
@@ -142,7 +156,7 @@ void Player::update(int deltaTime)
 			else posPlayer.y += FALL_STEP/4;
 			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
 			{
-				if (Game::instance().getSpecialKey(GLUT_KEY_UP))
+				if (Game::instance().getKey(Keys::Keys::Space))
 				{
 					bJumping = true;
 					jumpAngle = 0;
@@ -174,7 +188,3 @@ void Player::setPosition(const glm::vec2 &pos)
 bool canDash() {
 	return canDash;
 }
-
-
-
-
