@@ -5,9 +5,8 @@
 #include "Game.h"
 
 
-#define SCREEN_X 23
-#define SCREEN_Y 26 // que es??
-
+#define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
+#define SCREEN_Y 0 // son els píxels que deixa a dalt de la finestra de joc
 #define INIT_PLAYER_X_TILES 1
 #define INIT_PLAYER_Y_TILES 11 //posicio del player al spawnejar
 
@@ -31,7 +30,7 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	map = TileMap::createTileMap("levels/mapa1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map = TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 	player = new Player();
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
