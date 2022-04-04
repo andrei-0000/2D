@@ -76,19 +76,20 @@ bool TileMap::loadLevel(const string& levelFile)
 	sstream.str(line);
 	sstream >> tilesheetSize.x >> tilesheetSize.y;
 	tileTexSize = glm::vec2(1.f / tilesheetSize.x, 1.f / tilesheetSize.y);
-
+	int var1, var2;
+	char var5;
 	map = new int[mapSize.x * mapSize.y];
-	for (int j = 0; j < ((mapSize.y) * 2); j++)
+	for (int j = 0; j < mapSize.y; j++)
 	{
-		for (int i = 0; i < ((mapSize.x) * 2); i++) {
+		for (int i = 0; i < (((mapSize.x) * 2) - 1); i++) {
+
 			fin.get(tile);
-			if (tile != ',') {
+			if (tile != ' ') {
 				if (tile == '-') {
 					char tile2;
 					fin.get(tile2);
 					if (i != 0) {
 						map[j * mapSize.x + (i - (i / 2))] = 0;
-						
 					}
 					else {
 						map[j * mapSize.x + i] = 0;
@@ -97,10 +98,11 @@ bool TileMap::loadLevel(const string& levelFile)
 				else {
 					char tile2;
 					fin.get(tile2);
-					if (tile2 == ',') {
+					if (tile2 == ' ') {
 						fin.unget();
 						if (i != 0) {
 							map[j * mapSize.x + (i - (i / 2))] = (tile - int('0')) + 1;
+							
 						}
 						else {
 							map[j * mapSize.x + i] = (tile - int('0')) + 1;
@@ -115,15 +117,25 @@ bool TileMap::loadLevel(const string& levelFile)
 						int number = stoi(s3);
 						if (i != 0) {
 							map[j * mapSize.x + (i - (i / 2))] = number + 1;
+							var1 = j * mapSize.x + (i - (i / 2));
+							var2 = number + 1;
 						}
 						else {
 							map[j * mapSize.x + i] = number + 1;
+							var1 = j * mapSize.x + i;
+							var2 = number + 1;
 						}
+						tile2 = ' ';
 					}
 				}
 			}
+			else {
+				while (tile == ' ') {
+					fin.get(tile);
+				}
+				fin.unget();
+			}
 		}
-		fin.get(tile);
 #ifndef _WIN32
 		fin.get(tile);
 #endif
