@@ -22,12 +22,14 @@ public:
 	void init();
 	void update(int deltaTime);
 	void render();
+	void nextMap();
 
 private:
 	void initShaders();
 
 private:
 	TileMap *map;
+	vector<TileMap> maps;
 	Player *player;
 	ShaderProgram texProgram;
 	float currentTime;

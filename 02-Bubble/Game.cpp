@@ -28,6 +28,8 @@ void Game::keyPressed(int key)
 	if(key == 27) // Escape code
 		bPlay = false;
 	keys[key] = true;
+	if (key == 13)
+		scene.nextMap();
 }
 
 void Game::keyReleased(int key)
