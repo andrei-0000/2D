@@ -160,6 +160,7 @@ void Player::update(int deltaTime)
 				{
 					bJumping = true;
 					jumpAngle = 0;
+					posPlayer.y -= 2;
 					startY = posPlayer.y;
 				}
 				stickied = false;

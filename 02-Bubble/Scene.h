@@ -23,13 +23,15 @@ public:
 	void update(int deltaTime);
 	void render();
 	void nextMap();
+	int getCurrentMap();
 
 private:
 	void initShaders();
 
 private:
 	TileMap *map;
-	vector<TileMap> maps;
+	vector<TileMap *> maps;
+	int currentMap;
 	Player *player;
 	ShaderProgram texProgram;
 	float currentTime;

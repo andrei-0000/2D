@@ -85,31 +85,45 @@ bool TileMap::loadLevel(const string& levelFile)
 
 			fin.get(tile);
 			if (tile != ' ') {
+				if (tile == '\n') {
+					fin.get(tile);
+				}
 				if (tile == '-') {
 					char tile2;
 					fin.get(tile2);
 					if (i != 0) {
 						map[j * mapSize.x + (i - (i / 2))] = 0;
+						var1 = j * mapSize.x + (i - (i / 2));
+						var2 = 0;
 					}
 					else {
 						map[j * mapSize.x + i] = 0;
+						var1 = j * mapSize.x + i;
+						var2 = 0;
 					}
 				}
 				else {
 					char tile2;
 					fin.get(tile2);
+					if (j == mapSize.y - 1 && i == (((mapSize.x) * 2) - 2)) {
+						var5 = tile2;
+					}
 					if (tile2 == ' ') {
 						fin.unget();
 						if (i != 0) {
 							map[j * mapSize.x + (i - (i / 2))] = (tile - int('0')) + 1;
-							
+							var1 = j * mapSize.x + (i - (i / 2));
+							var2 = (tile - int('0')) + 1;
+
 						}
 						else {
 							map[j * mapSize.x + i] = (tile - int('0')) + 1;
+							var1 = j * mapSize.x + i;
+							var2 = (tile - int('0')) + 1;
 						}
 					}
 					else {
-						string s1, s2,s3;
+						string s1, s2, s3;
 						s1.append(1, tile);
 						s2.append(1, tile2);
 						s3.append(s1);
@@ -130,7 +144,7 @@ bool TileMap::loadLevel(const string& levelFile)
 				}
 			}
 			else {
-				while (tile == ' ') {
+				while (tile == ' ' || tile == '\n') {
 					fin.get(tile);
 				}
 				fin.unget();
@@ -141,6 +155,7 @@ bool TileMap::loadLevel(const string& levelFile)
 #endif
 	}
 	fin.close();
+	int var4 = map[299];
 
 	return true;
 }

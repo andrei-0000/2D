@@ -30,7 +30,10 @@ Scene::~Scene()
 void Scene::init()
 {
 	initShaders();
-	map = TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	currentMap = 0;
+	map = maps[currentMap];
 
 	player = new Player();
 
@@ -98,7 +101,20 @@ void Scene::initShaders()
 
 void Scene::nextMap()
 {
-	map = TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	++currentMap;
+	if (currentMap >= maps.size()) currentMap = 0;
+	map = maps[currentMap];
+	player->setTileMap(map);
+	switch (currentMap) {
+	case 0:
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
+	case 1:
+		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
+	}
+}
+
+int Scene::getCurrentMap() {
+	return currentMap;
 }
 
 
