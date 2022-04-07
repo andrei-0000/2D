@@ -6,7 +6,8 @@
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
-
+#include "Quad.h"
+#include "TexturedQuad.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -29,6 +30,9 @@ private:
 	void initShaders();
 
 private:
+	Quad* quad;
+	Texture texs[1];
+	TexturedQuad* texQuad[1];
 	TileMap *map;
 	vector<TileMap *> maps;
 	int currentMap;

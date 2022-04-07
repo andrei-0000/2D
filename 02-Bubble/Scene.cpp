@@ -15,6 +15,7 @@ Scene::Scene()
 {
 	map = NULL;
 	player = NULL;
+	texQuad[0] = NULL;
 
 }
 
@@ -24,12 +25,23 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
+	for (int i = 0; i < 1; i++)
+		if (texQuad[i] != NULL)
+			delete texQuad[i];
 }
 
 
 void Scene::init()
 {
+	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
+	glm::vec2 geom[2] = { glm::vec2(0.f, 0.f), glm::vec2(128.f, 128.f) };
+
+
 	initShaders();
+
+	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(4.f, 4.f);
+	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //suelo
+
 	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	currentMap = 0;
@@ -42,7 +54,7 @@ void Scene::init()
 	player->setTileMap(map);
 
 
-
+	texs[0].loadFromFile("images/skyline-b.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura champi
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
 }
@@ -58,12 +70,20 @@ void Scene::render()
 {
 	glm::mat4 modelview;
 
+
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+	
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 560.f, 0.f));
+	modelview = glm::scale(glm::mat4(1.0f), glm::vec3(10.f, 10.f, 0.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texQuad[0]->render(texs[0]);
+	
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+
 	map->render();
 	player->render();
 
@@ -107,7 +127,7 @@ void Scene::nextMap()
 	player->setTileMap(map);
 	switch (currentMap) {
 	case 0:
-		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 8 * map->getTileSize()));
 	case 1:
 		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
 	}

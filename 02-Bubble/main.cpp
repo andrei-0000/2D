@@ -1,6 +1,8 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include "Game.h"
+#include <Windows.h>
+#include  "MMSystem.h"
 
 
 //Remove console (only works in Visual Studio)
@@ -104,6 +106,7 @@ int main(int argc, char **argv)
 	
 	// Game instance initialization
 	Game::instance().init();
+	bool played = PlaySound(TEXT("sounds/cyberpunk_music.wav"), NULL, SND_ASYNC);
 	prevTime = glutGet(GLUT_ELAPSED_TIME);
 	// GLUT gains control of the application
 	glutMainLoop();
