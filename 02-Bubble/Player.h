@@ -21,6 +21,8 @@ public:
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
 	bool canDash();
+	float getX();
+	float getY();
 	
 private:
 	bool bJumping;

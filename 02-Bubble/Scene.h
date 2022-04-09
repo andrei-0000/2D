@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "Quad.h"
 #include "TexturedQuad.h"
+#include "ObjectPunts.h"
+#include "PowerUp.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -37,6 +39,8 @@ private:
 	vector<TileMap *> maps;
 	int currentMap;
 	Player *player;
+	ObjectPunts* objectpunts;
+	PowerUp* powerUp;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

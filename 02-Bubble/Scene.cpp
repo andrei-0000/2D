@@ -7,6 +7,7 @@
 
 #define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
 #define SCREEN_Y 0 // son els píxels que deixa a dalt de la finestra de joc
+#define COMPARE_DIFF 3.0
 #define INIT_PLAYER_X_TILES 1
 #define INIT_PLAYER_Y_TILES 11 //posicio del player al spawnejar
 
@@ -16,6 +17,8 @@ Scene::Scene()
 	map = NULL;
 	player = NULL;
 	texQuad[0] = NULL;
+	powerUp = NULL;
+	objectpunts = NULL;
 
 }
 
@@ -25,6 +28,10 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
+	if (objectpunts != NULL)
+		delete objectpunts;
+	if (powerUp != NULL)
+		delete powerUp;
 	for (int i = 0; i < 1; i++)
 		if (texQuad[i] != NULL)
 			delete texQuad[i];
@@ -48,22 +55,40 @@ void Scene::init()
 	map = maps[currentMap];
 
 	player = new Player();
+	powerUp = new PowerUp();
+	objectpunts = new ObjectPunts();
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 
+	powerUp->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	powerUp->setTileMap(map);
+
+	objectpunts->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	objectpunts->setTileMap(map);
 
 	texs[0].loadFromFile("images/skyline-b.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura champi
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
 }
 
+bool cmpf(float A, float B, float epsilon = 28.0f)
+{
+	if (A > B) return (fabs(A - B) < epsilon);
+	else return (fabs(B - A) < epsilon);
+}
+
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
-
+	objectpunts->update(deltaTime);
+	powerUp->update(deltaTime);
+	if (cmpf(player->getX(),objectpunts->getX()) && cmpf(player->getY(),objectpunts->getY()))
+	{
+		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	}
 }
 
 void Scene::render()
@@ -86,6 +111,8 @@ void Scene::render()
 
 	map->render();
 	player->render();
+	powerUp->render();
+	objectpunts->render();
 
 }
 
@@ -125,11 +152,23 @@ void Scene::nextMap()
 	if (currentMap >= maps.size()) currentMap = 0;
 	map = maps[currentMap];
 	player->setTileMap(map);
+	powerUp->setTileMap(map);
+	objectpunts->setTileMap(map);
+
+
+	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+
 	switch (currentMap) {
 	case 0:
-		player->setPosition(glm::vec2(1 * map->getTileSize(), 8 * map->getTileSize()));
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		break;
 	case 1:
 		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(10 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
+		break;
 	}
 }
 
