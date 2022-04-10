@@ -26,6 +26,7 @@ public:
 	void update(int deltaTime);
 	void render();
 	void nextMap();
+	void changeMap(int i);
 	int getCurrentMap();
 
 private:

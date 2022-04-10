@@ -196,6 +196,16 @@ float Player::getY()
 	return posPlayer.y;
 }
 
+bool Player::isDead()
+{
+	return dead;
+}
+
+void Player::changeDeathStatus(bool b)
+{
+	dead = b;
+}
+
 bool canDash() {
 	return canDash;
 }

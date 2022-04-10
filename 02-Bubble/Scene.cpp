@@ -89,6 +89,7 @@ void Scene::update(int deltaTime)
 	{
 		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	}
+	if (player->isDead()) changeMap(currentMap);
 }
 
 void Scene::render()
@@ -150,6 +151,32 @@ void Scene::nextMap()
 {
 	++currentMap;
 	if (currentMap >= maps.size()) currentMap = 0;
+	map = maps[currentMap];
+	player->setTileMap(map);
+	powerUp->setTileMap(map);
+	objectpunts->setTileMap(map);
+
+
+	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+
+	switch (currentMap) {
+	case 0:
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		break;
+	case 1:
+		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(10 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
+		break;
+	}
+}
+
+void Scene::changeMap(int i)
+{
+	++currentMap;
+	if (i >= maps.size() || i < 0) currentMap = 0;
 	map = maps[currentMap];
 	player->setTileMap(map);
 	powerUp->setTileMap(map);

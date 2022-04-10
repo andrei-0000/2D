@@ -23,7 +23,9 @@ public:
 	bool canDash();
 	float getX();
 	float getY();
-	
+	bool isDead();
+	void changeDeathStatus(bool b);
+
 private:
 	bool bJumping;
 	glm::ivec2 tileMapDispl, posPlayer;
@@ -34,6 +36,7 @@ private:
 	bool can_dash = true;
 	bool falling;
 	bool stickied = false;
+	bool dead = false;
 
 };
 
