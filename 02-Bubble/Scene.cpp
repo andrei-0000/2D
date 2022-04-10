@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Scene.h"
 #include "Game.h"
+#include <thread>
+#include <chrono>
 
 
 #define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
@@ -87,7 +89,11 @@ void Scene::update(int deltaTime)
 	powerUp->update(deltaTime);
 	if (cmpf(player->getX(),objectpunts->getX()) && cmpf(player->getY(),objectpunts->getY()))
 	{
-		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
+	}
+	if (cmpf(player->getX(), powerUp->getX()) && cmpf(player->getY(), powerUp->getY()))
+	{
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
 	if (player->isDead()) changeMap(currentMap);
 }
@@ -101,7 +107,7 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 	
-	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 560.f, 0.f));
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 190.f, 0.f));
 	modelview = glm::scale(glm::mat4(1.0f), glm::vec3(10.f, 10.f, 0.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[0]->render(texs[0]);
@@ -112,6 +118,11 @@ void Scene::render()
 
 	map->render();
 	player->render();
+	
+
+
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	powerUp->render();
 	objectpunts->render();
 
@@ -155,7 +166,6 @@ void Scene::nextMap()
 	player->setTileMap(map);
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
-
 
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));

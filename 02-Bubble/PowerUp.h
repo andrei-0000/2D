@@ -23,6 +23,9 @@ public:
 
 	bool haRecollit();
 
+	float getX();
+	float getY();
+
 private:
 
 	bool recollit;

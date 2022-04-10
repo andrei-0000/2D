@@ -72,3 +72,12 @@ void PowerUp::setPosition(const glm::vec2& pos)
 bool PowerUp::haRecollit() {
 	return recollit;
 }
+float PowerUp::getX()
+{
+	return posPowerUp.x;
+}
+
+float PowerUp::getY()
+{
+	return posPowerUp.y;
+}
