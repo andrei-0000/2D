@@ -25,6 +25,7 @@ public:
 	float getY();
 	bool isDead();
 	void changeDeathStatus(bool b);
+	void changeAnim();
 
 private:
 	bool bJumping;

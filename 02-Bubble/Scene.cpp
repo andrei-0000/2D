@@ -3,6 +3,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Scene.h"
 #include "Game.h"
+#include <chrono>
+#include <thread>
 
 
 #define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
@@ -89,9 +91,11 @@ void Scene::update(int deltaTime)
 	{
 		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	}
+	
 	if (player->isDead()) {
 		nextMap(false);
-		player->changeDeathStatus(false);
+		player->changeDeathStatus(false);	
+		player->changeAnim();
 	}
 }
 
@@ -152,6 +156,7 @@ void Scene::initShaders()
 
 void Scene::nextMap(bool next)
 {
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	if (next) ++currentMap;
 	if (currentMap >= maps.size()) currentMap = 0;
 	map = maps[currentMap];

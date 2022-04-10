@@ -5,7 +5,8 @@
 #include "Player.h"
 #include "Game.h"
 #include "Keys.h"
-
+#include <chrono>
+#include <thread>
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
@@ -43,13 +44,13 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.4f, 0.f));
 	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.6f, 0.f));
 
-	sprite->setAnimationSpeed(DIE_LEFT, 8);
+	sprite->setAnimationSpeed(DIE_LEFT, 20);
 	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.6f,0.83f));
 	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.4f,0.83f));
 	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.2f,0.83f));
 	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.f, 0.83f));
 
-	sprite->setAnimationSpeed(DIE_RIGHT, 8);
+	sprite->setAnimationSpeed(DIE_RIGHT, 20);
 	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.f, 0.66f));
 	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.2f, 0.66f));
 	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.4f, 0.66f));
@@ -63,7 +64,10 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 void Player::update(int deltaTime)
 {
+	//if(dead) sprite->update(deltaTime+10000);
+	//else sprite->update(deltaTime);
 	sprite->update(deltaTime);
+
 
 	if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
@@ -74,7 +78,9 @@ void Player::update(int deltaTime)
 			if (map->deathCollisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x += 2;
 				sprite->changeAnimation(DIE_LEFT);
+				//sprite->update(deltaTime + 1000);
 				dead = true;
+				
 			}
 			else {
 				if (bJumping) {
@@ -87,9 +93,9 @@ void Player::update(int deltaTime)
 		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
 			if (map->deathCollisionMoveLeft(posPlayer, glm::vec2(32, 32))) {
-				dead = true;
 				posPlayer.x += 2;
 				sprite->changeAnimation(DIE_LEFT);
+				dead = true;
 			}
 			else {
 				posPlayer.x += 2;
@@ -202,20 +208,22 @@ void Player::update(int deltaTime)
 	{
 			if (!stickied) posPlayer.y += FALL_STEP;
 			else posPlayer.y += FALL_STEP/4;
+			if (map->deathCollisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
+				sprite->changeAnimation(DIE_RIGHT);
+				dead = true;
+			}
 			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
 			{
-				
-				if (Game::instance().getKey(Keys::Keys::Space))
-				{
-					bJumping = true;
-					jumpAngle = 0;
-					posPlayer.y -= 2;
-					startY = posPlayer.y;
-				}
-				stickied = false;
+					if (Game::instance().getKey(Keys::Keys::Space))
+					{
+						bJumping = true;
+						jumpAngle = 0;
+						posPlayer.y -= 2;
+						startY = posPlayer.y;
+					}
+					stickied = false;
 			}
 	}
-	
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
 
@@ -250,7 +258,9 @@ bool Player::isDead()
 	return dead;
 }
 
-
+void Player::changeAnim() {
+	sprite->changeAnimation(STAND_RIGHT);
+}
 
 
 void Player::changeDeathStatus(bool b)
