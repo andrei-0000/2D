@@ -49,8 +49,8 @@ void ObjectPunts::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgra
 void ObjectPunts::update(int deltaTime)
 {
 	sprite->update(deltaTime);
-
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posObjectPunts.x), float(tileMapDispl.y + posObjectPunts.y)));
+	float time = glutGet(GLUT_ELAPSED_TIME);
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posObjectPunts.x), float((tileMapDispl.y + posObjectPunts.y))));
 }
 
 void ObjectPunts::render()
