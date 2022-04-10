@@ -141,12 +141,16 @@ void Player::update(int deltaTime)
 	}
 
 	//DASH
-	else if (Game::instance().getKey(Keys::Keys::D))
+	 else if (Game::instance().getKey(Keys::Keys::D))
 	{
-		if (sprite->animation() == STAND_RIGHT && can_dash)
-			posPlayer.x += 6;
-		else if (sprite->animation() == STAND_LEFT && can_dash)
-			posPlayer.x -= 6;
+		if (sprite->animation() == STAND_RIGHT && can_dash) {
+			posPlayer.x += 14;
+			dashing();
+		}
+		else if (sprite->animation() == STAND_LEFT && can_dash) {
+			posPlayer.x -= 14;
+			dashing();
+		}
 		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (bJumping) {
 				stickied = true;
@@ -155,7 +159,7 @@ void Player::update(int deltaTime)
 		
 			if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 			{
-				posPlayer.x -= 6;
+				posPlayer.x -= 14;
 				sprite->changeAnimation(STAND_RIGHT);
 			}
 		}
@@ -171,7 +175,7 @@ void Player::update(int deltaTime)
 					stickied = true;
 					bJumping = false;
 				}
-				posPlayer.x += 6;
+				posPlayer.x += 14;
 				sprite->changeAnimation(STAND_LEFT);
 			}
 		}
@@ -260,6 +264,27 @@ bool Player::isDead()
 
 void Player::changeAnim() {
 	sprite->changeAnimation(STAND_RIGHT);
+}
+
+void Player::setDash()
+{
+	can_dash = true;
+	dash_steps = 4;
+}
+
+void Player::clearDash()
+{
+	can_dash = false;
+	dash_steps = 0;
+}
+
+void Player::dashing()
+{
+	--dash_steps;
+	if (dash_steps <= 0) {
+		can_dash = false;
+		dash_steps = 0;
+	}
 }
 
 

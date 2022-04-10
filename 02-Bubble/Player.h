@@ -26,6 +26,9 @@ public:
 	bool isDead();
 	void changeDeathStatus(bool b);
 	void changeAnim();
+	void setDash();
+	void clearDash();
+	void dashing();
 
 private:
 	bool bJumping;
@@ -35,6 +38,7 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	bool can_dash = true;
+	int dash_steps = 4;
 	bool falling;
 	bool stickied = false;
 	bool dead = false;

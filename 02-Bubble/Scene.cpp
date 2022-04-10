@@ -18,7 +18,9 @@ Scene::Scene()
 {
 	map = NULL;
 	player = NULL;
-	texQuad[0] = NULL;
+	texQuad[0] = NULL; //background
+	texQuad[1] = NULL; //middleground
+	texQuad[2] = NULL; //foreground
 	powerUp = NULL;
 	objectpunts = NULL;
 
@@ -34,7 +36,7 @@ Scene::~Scene()
 		delete objectpunts;
 	if (powerUp != NULL)
 		delete powerUp;
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; 2 < 1; i++)
 		if (texQuad[i] != NULL)
 			delete texQuad[i];
 }
@@ -49,7 +51,9 @@ void Scene::init()
 	initShaders();
 
 	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(4.f, 4.f);
-	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //suelo
+	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //background
+	texQuad[1] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //middleground
+	texQuad[2] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //foreground
 
 	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
@@ -70,8 +74,16 @@ void Scene::init()
 	objectpunts->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	objectpunts->setTileMap(map);
 
-	texs[0].loadFromFile("images/skyline-b.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura champi
+	texs[0].loadFromFile("images/skyline-b.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura background
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+	currentTime = 0.0f;
+
+	texs[1].loadFromFile("images/buildings.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+	currentTime = 0.0f;
+
+	texs[2].loadFromFile("images/near.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH ), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
 
@@ -93,12 +105,13 @@ void Scene::update(int deltaTime)
 	}
 	
 	if (player->isDead()) {
+		player->changeAnim();
 		nextMap(false);
 		player->changeDeathStatus(false);	
-		player->changeAnim();
 	}
 	if (cmpf(player->getX(), powerUp->getX()) && cmpf(player->getY(), powerUp->getY()))
 	{
+		player->setDash();
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
 	if (player->isDead()) changeMap(currentMap);
@@ -113,10 +126,22 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 	
+	modelview = glm::mat4(1.0f);
 	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 190.f, 0.f));
 	modelview = glm::scale(glm::mat4(1.0f), glm::vec3(10.f, 10.f, 0.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[0]->render(texs[0]);
+
+	modelview = glm::mat4(1.0f);
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 490.f, 0.f));
+	modelview = glm::scale(glm::mat4(1.0f), glm::vec3(11.f, 14.f, 1.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texQuad[1]->render(texs[1]);
+
+	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 260.f, 0.f));
+	modelview = glm::scale(modelview, glm::vec3(17.f, 17.f, 1.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texQuad[2]->render(texs[2]);
 	
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
@@ -129,6 +154,11 @@ void Scene::render()
 
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+
+	/*modelview = glm::translate(modelview, glm::vec3(7000 * (sin(-currentTime / 500)), 0.f, 0.f));
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);*/
+
 	powerUp->render();
 	objectpunts->render();
 
@@ -166,13 +196,14 @@ void Scene::initShaders()
 
 void Scene::nextMap(bool next)
 {
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	//std::this_thread::sleep_for(std::chrono::seconds(1));
 	if (next) ++currentMap;
 	if (currentMap >= maps.size()) currentMap = 0;
 	map = maps[currentMap];
 	player->setTileMap(map);
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
+	player->setDash();
 
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));

@@ -34,8 +34,8 @@ private:
 
 private:
 	Quad* quad;
-	Texture texs[1];
-	TexturedQuad* texQuad[1];
+	Texture texs[3];
+	TexturedQuad* texQuad[3];
 	TileMap *map;
 	vector<TileMap *> maps;
 	int currentMap;
