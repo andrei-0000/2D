@@ -29,7 +29,7 @@ void Game::keyPressed(int key)
 		bPlay = false;
 	keys[key] = true;
 	if (key == 13)
-		scene.nextMap();
+		scene.nextMap(true);
 }
 
 void Game::keyReleased(int key)

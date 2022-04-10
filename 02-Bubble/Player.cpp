@@ -14,37 +14,51 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, DIE_LEFT, DIE_RIGHT
 };
 
 
-void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
+void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 {
 	bJumping = false;
-	spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.25, 0.25), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(4);
-	
-		sprite->setAnimationSpeed(STAND_LEFT, 8);
-		sprite->addKeyframe(STAND_LEFT, glm::vec2(0.f, 0.f));
-		
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);
-		sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.25f, 0.f));
-		
-		sprite->setAnimationSpeed(MOVE_LEFT, 8);
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.5f));
-		
-		sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.f));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.25f));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.5f));
-		
+	spritesheet.loadFromFile("images/Player.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.2, 0.16), &spritesheet, &shaderProgram);
+	sprite->setNumberAnimations(6);
+
+	sprite->setAnimationSpeed(STAND_LEFT, 8);
+	sprite->addKeyframe(STAND_LEFT, glm::vec2(0.2f, 0.33f));
+
+	sprite->setAnimationSpeed(STAND_RIGHT, 8);
+	sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.f, 0.33f));
+
+	sprite->setAnimationSpeed(MOVE_LEFT, 8);
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.8f, 0.5f));
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.6f, 0.5f));
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.4f, 0.5f));
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.2f, 0.5f));
+
+	sprite->setAnimationSpeed(MOVE_RIGHT, 8);
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.2f, 0.f));
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.4f, 0.f));
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.6f, 0.f));
+
+	sprite->setAnimationSpeed(DIE_LEFT, 8);
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.6f,0.83f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.4f,0.83f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.2f,0.83f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.f, 0.83f));
+
+	sprite->setAnimationSpeed(DIE_RIGHT, 8);
+	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.f, 0.66f));
+	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.2f, 0.66f));
+	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.4f, 0.66f));
+	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.6f, 0.66f));
+
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-	
+
 }
 
 void Player::update(int deltaTime)
@@ -57,16 +71,33 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(MOVE_LEFT);
 		posPlayer.x -= 2;
 		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
-			if (bJumping) {
-				stickied = true;
-				bJumping = false;
+			if (map->deathCollisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
+				posPlayer.x += 2;
+				sprite->changeAnimation(DIE_LEFT);
+				dead = true;
 			}
+			else {
+				if (bJumping) {
+					stickied = true;
+					bJumping = false;
+				}
+			}
+			
 		}
 		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.x += 2;
-			sprite->changeAnimation(STAND_LEFT);
+			if (map->deathCollisionMoveLeft(posPlayer, glm::vec2(32, 32))) {
+				dead = true;
+				posPlayer.x += 2;
+				sprite->changeAnimation(DIE_LEFT);
+			}
+			else {
+				posPlayer.x += 2;
+				sprite->changeAnimation(STAND_LEFT);
+			}
+			
 		}
+
 	}
 	else if(Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 	{
@@ -74,15 +105,32 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(MOVE_RIGHT);
 		posPlayer.x += 2;
 		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
-			if (bJumping) {
-				stickied = true;
-				bJumping = false;
+			if (map->deathCollisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
+				posPlayer.x -= 2;
+				sprite->changeAnimation(DIE_RIGHT);
+				dead = true;
+			}
+			else {
+				if (bJumping) {
+					stickied = true;
+					bJumping = false;
+				}
 			}
 		}
+			
 		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
-			posPlayer.x -= 2;
-			sprite->changeAnimation(STAND_RIGHT);
+			if (map->deathCollisionMoveRight(posPlayer, glm::vec2(32, 32))) {
+				dead = true;
+				posPlayer.x -= 2;
+				sprite->changeAnimation(DIE_RIGHT);
+			}
+			else {
+				posPlayer.x -= 2;
+				sprite->changeAnimation(STAND_RIGHT);
+
+			}
+			
 		}
 	}
 
@@ -156,6 +204,7 @@ void Player::update(int deltaTime)
 			else posPlayer.y += FALL_STEP/4;
 			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
 			{
+				
 				if (Game::instance().getKey(Keys::Keys::Space))
 				{
 					bJumping = true;
@@ -200,6 +249,9 @@ bool Player::isDead()
 {
 	return dead;
 }
+
+
+
 
 void Player::changeDeathStatus(bool b)
 {
