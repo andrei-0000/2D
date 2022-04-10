@@ -91,6 +91,12 @@ void Scene::update(int deltaTime)
 	{
 		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
+	
+	if (player->isDead()) {
+		nextMap(false);
+		player->changeDeathStatus(false);	
+		player->changeAnim();
+	}
 	if (cmpf(player->getX(), powerUp->getX()) && cmpf(player->getY(), powerUp->getY()))
 	{
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
@@ -158,9 +164,10 @@ void Scene::initShaders()
 	fShader.free();
 }
 
-void Scene::nextMap()
+void Scene::nextMap(bool next)
 {
-	++currentMap;
+	std::this_thread::sleep_for(std::chrono::seconds(1));
+	if (next) ++currentMap;
 	if (currentMap >= maps.size()) currentMap = 0;
 	map = maps[currentMap];
 	player->setTileMap(map);
@@ -173,7 +180,7 @@ void Scene::nextMap()
 
 	switch (currentMap) {
 	case 0:
-		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
 		break;
 	case 1:
 		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
@@ -182,6 +189,7 @@ void Scene::nextMap()
 		break;
 	}
 }
+
 
 void Scene::changeMap(int i)
 {
