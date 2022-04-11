@@ -108,8 +108,8 @@ void Scene::update(int deltaTime)
 	}
 	
 	if (player->isDead()) {
-		bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 		player->changeAnim();
+		player->setDeath();
 		nextMap(false);
 		player->changeDeathStatus(false);	
 	}
@@ -208,6 +208,7 @@ void Scene::nextMap(bool next)
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
 	player->setDash();
+	player->setReappearing();
 
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));

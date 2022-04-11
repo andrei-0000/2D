@@ -7,6 +7,8 @@
 #include "Keys.h"
 #include <chrono>
 #include <thread>
+#include <Windows.h>
+#include  "MMSystem.h"
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
@@ -68,11 +70,21 @@ void Player::update(int deltaTime)
 	//else sprite->update(deltaTime);
 	sprite->update(deltaTime);
 
-	if (dashing) {
+	if (dying) {
+			sprite->changeAnimation(DIE_RIGHT);
+		die();
+	}
+
+	else if (reappearing) {
+		reappear();
+	}
+
+	else if (dashing) {
 		dash();
 	}
 
-	if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
+
+	else if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
 		if(sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
@@ -81,9 +93,9 @@ void Player::update(int deltaTime)
 		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x += 2;
+				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 				sprite->changeAnimation(DIE_LEFT);
-				//sprite->update(deltaTime + 1000);
-				dead = true;
+				dying = true;
 				
 			}
 			else {
@@ -98,8 +110,9 @@ void Player::update(int deltaTime)
 		{
 			if (map->deathCollisionMoveLeft(posPlayer, glm::vec2(32, 32))) {
 				posPlayer.x += 2;
+				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 				sprite->changeAnimation(DIE_LEFT);
-				dead = true;
+				dying = true;
 			}
 			else {
 				posPlayer.x += 2;
@@ -118,8 +131,9 @@ void Player::update(int deltaTime)
 		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x -= 2;
+				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 				sprite->changeAnimation(DIE_RIGHT);
-				dead = true;
+				dying = true;
 			}
 			else {
 				if (bJumping) {
@@ -132,9 +146,10 @@ void Player::update(int deltaTime)
 		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
 			if (map->deathCollisionMoveRight(posPlayer, glm::vec2(32, 32))) {
-				dead = true;
 				posPlayer.x -= 2;
+				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 				sprite->changeAnimation(DIE_RIGHT);
+				dying = true;
 			}
 			else {
 				posPlayer.x -= 2;
@@ -205,8 +220,9 @@ void Player::update(int deltaTime)
 			if (!stickied) posPlayer.y += FALL_STEP;
 			else posPlayer.y += FALL_STEP/4;
 			if (map->deathCollisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
+				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 				sprite->changeAnimation(DIE_RIGHT);
-				dead = true;
+				dying = true;
 			}
 			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
 			{
@@ -271,6 +287,17 @@ void Player::clearDash()
 	dash_steps = 0;
 }
 
+void Player::setDeath()
+{
+	die_steps = 60;
+}
+
+void Player::setReappearing()
+{
+	reappearing = true;
+	reappearing_steps = 15;
+}
+
 void Player::dash() {
 	if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 	{
@@ -314,6 +341,27 @@ void Player::dash() {
 	}
 }
 
+void Player::die() {
+	if (die_steps > 30) posPlayer.y += 16;
+	if (die_steps < 30) posPlayer.y -= 16;
+	--die_steps;
+
+	if (die_steps <= 0) {
+		dead = true;
+		die_steps = 0;
+		dying = false;
+	}
+}
+
+void Player::reappear() {
+	if (reappearing_steps > 7) posPlayer.y += 15;
+	else if (reappearing_steps < 8) posPlayer.y -= 25;
+	--reappearing_steps;
+	if (reappearing_steps <= 0) {
+		reappearing_steps = 0;
+		reappearing = false;
+	}
+}
 
 void Player::changeDeathStatus(bool b)
 {

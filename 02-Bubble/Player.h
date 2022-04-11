@@ -28,8 +28,14 @@ public:
 	void changeAnim();
 	void setDash();
 	void clearDash();
+	void setDeath();
+	void setReappearing();
 
 	void dash();
+
+	void die();
+
+	void reappear();
 
 private:
 	bool bJumping;
@@ -40,11 +46,15 @@ private:
 	TileMap *map;
 	bool can_dash = true;
 	int dash_steps = 8;
+	int die_steps = 60;
+	int reappearing_steps = 15;
 	string dash_direction;
 	bool falling;
 	bool dashing = false;
 	bool stickied = false;
+	bool reappearing = false;
 	bool dead = false;
+	bool dying = false;
 
 };
 
