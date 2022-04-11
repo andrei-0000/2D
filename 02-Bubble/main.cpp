@@ -70,8 +70,12 @@ static void idleCallback()
 {
 	int currentTime = glutGet(GLUT_ELAPSED_TIME);
 	int deltaTime = currentTime - prevTime;
-	
-	if(deltaTime > TIME_PER_FRAME)
+	int slow = 0;
+
+	if (Game::instance().timeSlow) {
+		slow = 40;
+	}
+	if(deltaTime > TIME_PER_FRAME + slow)
 	{
 		// Every time we enter here is equivalent to a game loop execution
 		if(!Game::instance().update(deltaTime))

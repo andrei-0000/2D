@@ -30,6 +30,8 @@ void Game::keyPressed(int key)
 	keys[key] = true;
 	if (key == 13)
 		scene.nextMap(true);
+	if (key == 90)
+		timeSlow = !timeSlow;
 }
 
 void Game::keyReleased(int key)
