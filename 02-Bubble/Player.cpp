@@ -146,7 +146,7 @@ void Player::update(int deltaTime)
 	}
 
 	//DASH
-	  if (Game::instance().getKey(Keys::Keys::D))
+	else  if (Game::instance().getKey(Keys::Keys::D))
 	{
 		if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
 			dashing = true;
@@ -171,6 +171,19 @@ void Player::update(int deltaTime)
 	if(bJumping)
 	{
 		if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
+		else  if (Game::instance().getKey(Keys::Keys::D)) //dash while jumping
+		{
+			if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
+				dashing = true;
+				dash_direction = "right";
+				dash();
+			}
+			else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
+				dashing = true;
+				dash_direction = "left";
+				dash();
+			}
+		}
 		if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
 			bJumping = false;
 			posPlayer.y = startY;
@@ -261,7 +274,7 @@ void Player::clearDash()
 void Player::dash() {
 	if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 	{
-		posPlayer.x -= 8;
+		posPlayer.x -= 12;
 		sprite->changeAnimation(STAND_RIGHT);
 		dashing = false;
 		dash_steps = 0;
@@ -275,7 +288,7 @@ void Player::dash() {
 
 	else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 	{
-		posPlayer.x += 8;
+		posPlayer.x += 12;
 		sprite->changeAnimation(STAND_LEFT);
 		dashing = false;
 		dash_steps = 0;
@@ -288,10 +301,10 @@ void Player::dash() {
 	}
 
 	if (dash_direction == "left") {
-		posPlayer.x -= 8;
+		posPlayer.x -= 12;
 	}
 	else if (dash_direction == "right") {
-		posPlayer.x += 8;
+		posPlayer.x += 12;
 	}
 	--dash_steps;
 	if (dash_steps <= 0) {
