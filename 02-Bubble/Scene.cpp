@@ -5,6 +5,8 @@
 #include "Game.h"
 #include <thread>
 #include <chrono>
+#include <Windows.h>
+#include  "MMSystem.h"
 
 
 #define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
@@ -101,10 +103,12 @@ void Scene::update(int deltaTime)
 	powerUp->update(deltaTime);
 	if (cmpf(player->getX(),objectpunts->getX()) && cmpf(player->getY(),objectpunts->getY()))
 	{
+		bool played = PlaySound(TEXT("sounds/coin.wav"), NULL, SND_ASYNC);
 		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
 	
 	if (player->isDead()) {
+		bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 		player->changeAnim();
 		nextMap(false);
 		player->changeDeathStatus(false);	

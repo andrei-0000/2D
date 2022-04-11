@@ -68,12 +68,16 @@ void Player::update(int deltaTime)
 	//else sprite->update(deltaTime);
 	sprite->update(deltaTime);
 
+	if (dashing) {
+		dash();
+	}
 
 	if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
 		if(sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
 		posPlayer.x -= 2;
+		setDash();
 		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x += 2;
@@ -110,6 +114,7 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
 		posPlayer.x += 2;
+		setDash();
 		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x -= 2;
@@ -141,43 +146,17 @@ void Player::update(int deltaTime)
 	}
 
 	//DASH
-	 else if (Game::instance().getKey(Keys::Keys::D))
+	  if (Game::instance().getKey(Keys::Keys::D))
 	{
-		if (sprite->animation() == STAND_RIGHT && can_dash) {
-			posPlayer.x += 14;
-			dashing();
+		if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
+			dashing = true;
+			dash_direction = "right";
+			dash();
 		}
-		else if (sprite->animation() == STAND_LEFT && can_dash) {
-			posPlayer.x -= 14;
-			dashing();
-		}
-		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
-			if (bJumping) {
-				stickied = true;
-				bJumping = false;
-			}
-		
-			if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
-			{
-				posPlayer.x -= 14;
-				sprite->changeAnimation(STAND_RIGHT);
-			}
-		}
-		else if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
-			if (bJumping) {
-				stickied = true;
-				bJumping = false;
-			}
-
-			if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
-			{
-				if (bJumping) {
-					stickied = true;
-					bJumping = false;
-				}
-				posPlayer.x += 14;
-				sprite->changeAnimation(STAND_LEFT);
-			}
+		else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
+			dashing = true;
+			dash_direction = "left";
+			dash();
 		}
 	}
 
@@ -268,8 +247,9 @@ void Player::changeAnim() {
 
 void Player::setDash()
 {
+	dashing = false;
 	can_dash = true;
-	dash_steps = 4;
+	dash_steps = 8;
 }
 
 void Player::clearDash()
@@ -278,12 +258,46 @@ void Player::clearDash()
 	dash_steps = 0;
 }
 
-void Player::dashing()
-{
+void Player::dash() {
+	if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+	{
+		posPlayer.x -= 8;
+		sprite->changeAnimation(STAND_RIGHT);
+		dashing = false;
+		dash_steps = 0;
+		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
+			if (bJumping) {
+				stickied = true;
+				bJumping = false;
+			}
+		}
+	}
+
+	else if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+	{
+		posPlayer.x += 8;
+		sprite->changeAnimation(STAND_LEFT);
+		dashing = false;
+		dash_steps = 0;
+		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
+			if (bJumping) {
+				stickied = true;
+				bJumping = false;
+			}
+		}
+	}
+
+	if (dash_direction == "left") {
+		posPlayer.x -= 8;
+	}
+	else if (dash_direction == "right") {
+		posPlayer.x += 8;
+	}
 	--dash_steps;
 	if (dash_steps <= 0) {
-		can_dash = false;
 		dash_steps = 0;
+		dashing = false;
+		can_dash = false;
 	}
 }
 

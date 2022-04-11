@@ -28,7 +28,8 @@ public:
 	void changeAnim();
 	void setDash();
 	void clearDash();
-	void dashing();
+
+	void dash();
 
 private:
 	bool bJumping;
@@ -38,8 +39,10 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	bool can_dash = true;
-	int dash_steps = 4;
+	int dash_steps = 8;
+	string dash_direction;
 	bool falling;
+	bool dashing = false;
 	bool stickied = false;
 	bool dead = false;
 
