@@ -12,6 +12,7 @@
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
+#define PLATFORM_HEIGHT 130
 #define FALL_STEP 4
 
 
@@ -182,6 +183,19 @@ void Player::update(int deltaTime)
 		else if(sprite->animation() == MOVE_RIGHT)
 			sprite->changeAnimation(STAND_RIGHT);
 	}
+	if (platformJumping) {
+		if (jumpAngle == 180)
+		{
+			bJumping = false;
+			posPlayer.y = startY;
+		}
+		else
+		{
+			posPlayer.y = int(startY - PLATFORM_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
+			if (jumpAngle > 90)
+				bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
+		}
+	}
 	
 	if(bJumping)
 	{
@@ -296,6 +310,14 @@ void Player::setReappearing()
 {
 	reappearing = true;
 	reappearing_steps = 15;
+}
+
+void Player::setPlatform(bool a) {
+	platformJumping = a;
+}
+
+bool Player::getPlatform() {
+	return platformJumping;
 }
 
 void Player::dash() {

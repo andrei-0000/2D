@@ -25,24 +25,27 @@ Scene::Scene()
 	texQuad[2] = NULL; //foreground
 	powerUp = NULL;
 	objectpunts = NULL;
+	platform = NULL;
 
 }
 
+
 Scene::~Scene()
 {
-	if(map != NULL)
+	if (map != NULL)
 		delete map;
-	if(player != NULL)
+	if (player != NULL)
 		delete player;
 	if (objectpunts != NULL)
 		delete objectpunts;
 	if (powerUp != NULL)
 		delete powerUp;
+	if (platform != NULL)
+		delete platform;
 	for (int i = 0; 2 < 1; i++)
 		if (texQuad[i] != NULL)
 			delete texQuad[i];
 }
-
 
 void Scene::init()
 {
@@ -65,6 +68,7 @@ void Scene::init()
 	player = new Player();
 	powerUp = new PowerUp();
 	objectpunts = new ObjectPunts();
+	platform = new Platform();
 
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setTileMap(map);
@@ -76,6 +80,9 @@ void Scene::init()
 	objectpunts->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	objectpunts->setTileMap(map);
 
+	platform->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	platform->setTileMap(map);
+
 	texs[0].loadFromFile("images/skyline-b.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura background
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
@@ -85,7 +92,7 @@ void Scene::init()
 	currentTime = 0.0f;
 
 	texs[2].loadFromFile("images/near.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH ), float(SCREEN_HEIGHT), 0.f);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
 
@@ -101,24 +108,30 @@ void Scene::update(int deltaTime)
 	player->update(deltaTime);
 	objectpunts->update(deltaTime);
 	powerUp->update(deltaTime);
-	if (cmpf(player->getX(),objectpunts->getX()) && cmpf(player->getY(),objectpunts->getY()))
+	platform->update(deltaTime);
+
+	if (cmpf(player->getX(), objectpunts->getX()) && cmpf(player->getY(), objectpunts->getY()))
 	{
 		bool played = PlaySound(TEXT("sounds/coin.wav"), NULL, SND_ASYNC);
 		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
-	
+
 	if (player->isDead()) {
+		bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 		player->changeAnim();
-		player->setDeath();
 		nextMap(false);
-		player->changeDeathStatus(false);	
+		player->changeDeathStatus(false);
 	}
 	if (cmpf(player->getX(), powerUp->getX()) && cmpf(player->getY(), powerUp->getY()))
 	{
 		player->setDash();
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
-	if (player->isDead()) changeMap(currentMap);
+	//if (player->isDead()) changeMap(currentMap);
+	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 2), (platform->getY()))) {
+		player->setPlatform(true);
+	}
+	else player->setPlatform(false);
 }
 
 void Scene::render()
@@ -129,7 +142,7 @@ void Scene::render()
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
-	
+
 	modelview = glm::mat4(1.0f);
 	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 190.f, 0.f));
 	modelview = glm::scale(glm::mat4(1.0f), glm::vec3(10.f, 10.f, 0.f));
@@ -146,14 +159,14 @@ void Scene::render()
 	modelview = glm::scale(modelview, glm::vec3(17.f, 17.f, 1.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[2]->render(texs[2]);
-	
+
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	map->render();
 	player->render();
-	
+
 
 
 	texProgram.setUniformMatrix4f("modelview", modelview);
@@ -165,6 +178,7 @@ void Scene::render()
 
 	powerUp->render();
 	objectpunts->render();
+	platform->render();
 
 }
 
@@ -200,19 +214,20 @@ void Scene::initShaders()
 
 void Scene::nextMap(bool next)
 {
-	//std::this_thread::sleep_for(std::chrono::seconds(1));
 	if (next) ++currentMap;
 	if (currentMap >= maps.size()) currentMap = 0;
 	map = maps[currentMap];
 	player->setTileMap(map);
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
+	platform->setTileMap(map);
 	player->setDash();
-	player->setReappearing();
+
 
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
 
 	switch (currentMap) {
 	case 0:
