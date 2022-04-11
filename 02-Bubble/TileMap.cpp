@@ -28,7 +28,7 @@ TileMap::~TileMap()
 		delete map;
 }
 
-
+//Render del mapa
 void TileMap::render() const
 {
 	glEnable(GL_TEXTURE_2D);
@@ -45,6 +45,8 @@ void TileMap::free()
 	glDeleteBuffers(1, &vbo);
 }
 
+
+//Llegir nivell del .txt
 bool TileMap::loadLevel(const string& levelFile)
 {
 	ifstream fin;
@@ -82,7 +84,6 @@ bool TileMap::loadLevel(const string& levelFile)
 	for (int j = 0; j < mapSize.y; j++)
 	{
 		for (int i = 0; i < (((mapSize.x) * 2) - 1); i++) {
-
 			fin.get(tile);
 			if (tile != ' ') {
 				if (tile == '\n') {
@@ -93,33 +94,22 @@ bool TileMap::loadLevel(const string& levelFile)
 					fin.get(tile2);
 					if (i != 0) {
 						map[j * mapSize.x + (i - (i / 2))] = 0;
-						var1 = j * mapSize.x + (i - (i / 2));
-						var2 = 0;
 					}
 					else {
 						map[j * mapSize.x + i] = 0;
-						var1 = j * mapSize.x + i;
-						var2 = 0;
 					}
 				}
 				else {
 					char tile2;
 					fin.get(tile2);
-					if (j == mapSize.y - 1 && i == (((mapSize.x) * 2) - 2)) {
-						var5 = tile2;
-					}
 					if (tile2 == ' ') {
 						fin.unget();
 						if (i != 0) {
 							map[j * mapSize.x + (i - (i / 2))] = (tile - int('0')) + 1;
-							var1 = j * mapSize.x + (i - (i / 2));
-							var2 = (tile - int('0')) + 1;
 
 						}
 						else {
 							map[j * mapSize.x + i] = (tile - int('0')) + 1;
-							var1 = j * mapSize.x + i;
-							var2 = (tile - int('0')) + 1;
 						}
 					}
 					else {
@@ -131,13 +121,9 @@ bool TileMap::loadLevel(const string& levelFile)
 						int number = stoi(s3);
 						if (i != 0) {
 							map[j * mapSize.x + (i - (i / 2))] = number + 1;
-							var1 = j * mapSize.x + (i - (i / 2));
-							var2 = number + 1;
 						}
 						else {
 							map[j * mapSize.x + i] = number + 1;
-							var1 = j * mapSize.x + i;
-							var2 = number + 1;
 						}
 						tile2 = ' ';
 					}
@@ -155,7 +141,6 @@ bool TileMap::loadLevel(const string& levelFile)
 #endif
 	}
 	fin.close();
-	int var4 = map[299];
 
 	return true;
 }
@@ -212,22 +197,23 @@ void TileMap::prepareArrays(const glm::vec2 &minCoords, ShaderProgram &program)
 // Method collisionMoveDown also corrects Y coordinate if the box is
 // already intersecting a tile below.
 
+//Colisió amb mapa esquerra
 bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y0, y1;
 	
-	x = pos.x / tileSize;
-	y0 = pos.y / tileSize;
-	y1 = (pos.y + size.y - 1) / tileSize;
-	for(int y=y0; y<=y1; y++)
+	x = pos.x / tileSize; //dividim entre els pixels del tile per a que la x estigui en tiles --> x es posicio de esquerra de tot 
+	y0 = pos.y / tileSize; //dividim entre els pixels del tile per a que la 7 estigui en tiles --> y es la posicio de dalt de tot
+	y1 = (pos.y + size.y - 1) / tileSize; //y1 --> posicio final de la caixa en y --> abaix de la caixa
+	for(int y=y0; y<=y1; y++) //bucle per a veure si hi ha algun tros de la caixa que colisiona
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(map[y*mapSize.x+x] != 0) //si es != 0 significa que hi ha un tile i per tant retorna true
 			return true;
 	}
 	
 	return false;
 }
-
+//Colisió amb mapa dreta
 bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y0, y1;
@@ -244,6 +230,8 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	return false;
 }
 
+
+//Colisió salt dreta
 bool TileMap::collisionMoveRightJump(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y, y1;
@@ -260,6 +248,8 @@ bool TileMap::collisionMoveRightJump(const glm::ivec2 &pos, const glm::ivec2 &si
 	return false;
 }
 
+
+//Colisió salt esquerra
 bool TileMap::collisionMoveLeftJump(const glm::ivec2 &pos, const glm::ivec2 &size) const
 {
 	int x, y, y1;

@@ -42,7 +42,7 @@ Scene::~Scene()
 		delete powerUp;
 	if (platform != NULL)
 		delete platform;
-	for (int i = 0; 2 < 1; i++)
+	for (int i = 0; i < 3; i++)
 		if (texQuad[i] != NULL)
 			delete texQuad[i];
 }
@@ -60,42 +60,48 @@ void Scene::init()
 	texQuad[1] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //middleground
 	texQuad[2] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //foreground
 
+	//Posar diferents nivells
 	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	currentMap = 0;
+	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
 
+	//Inicialització de objectes/juadors
 	player = new Player();
 	powerUp = new PowerUp();
 	objectpunts = new ObjectPunts();
 	platform = new Platform();
 
+	//Inicialització de player
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setTileMap(map);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 
+	//Inicialització d'objecte que recarrega dash
 	powerUp->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	powerUp->setTileMap(map);
 
+	//Inicialització d'objectes de puntuació
 	objectpunts->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	objectpunts->setTileMap(map);
 
+	//Inicialització de plataforma
 	platform->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	platform->setTileMap(map);
 
+
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
+
+	//Carreguem textures de background/middleground
 	texs[0].loadFromFile("images/skyline-b.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura background
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
-	currentTime = 0.0f;
-
 	texs[1].loadFromFile("images/buildings.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
-	currentTime = 0.0f;
-
 	texs[2].loadFromFile("images/near.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+
 	currentTime = 0.0f;
 }
+	
 
+//Funció de comparació
 bool cmpf(float A, float B, float epsilon = 28.0f)
 {
 	if (A > B) return (fabs(A - B) < epsilon);
@@ -104,41 +110,52 @@ bool cmpf(float A, float B, float epsilon = 28.0f)
 
 void Scene::update(int deltaTime)
 {
+	
 	currentTime += deltaTime;
+	//Fem update objectes/jugadors
 	player->update(deltaTime);
 	objectpunts->update(deltaTime);
 	powerUp->update(deltaTime);
 	platform->update(deltaTime);
 
+	//Agafar objecte de puntuació
 	if (cmpf(player->getX(), objectpunts->getX()) && cmpf(player->getY(), objectpunts->getY()))
 	{
 		bool played = PlaySound(TEXT("sounds/coin.wav"), NULL, SND_ASYNC);
 		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
 
+
+	//Si el jugador mor
 	if (player->isDead()) {
 		bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
-		player->changeAnim();
+		player->changetoDeadAnim();
 		nextMap(false);
 		player->changeDeathStatus(false);
 	}
+
+	//Agafar objecte que recarrega dash
 	if (cmpf(player->getX(), powerUp->getX()) && cmpf(player->getY(), powerUp->getY()))
 	{
 		player->setDash();
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
 	//if (player->isDead()) changeMap(currentMap);
-	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 2), (platform->getY()))) {
+
+	//Saltar plataforma
+	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 1), (platform->getY()))) {
 		player->setPlatform(true);
 	}
 	else player->setPlatform(false);
 }
 
+
+//Renderitzar
 void Scene::render()
 {
 	glm::mat4 modelview;
 
-
+	//Aqui pot estar el problema
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -155,6 +172,7 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[1]->render(texs[1]);
 
+	modelview = glm::mat4(1.0f);
 	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 260.f, 0.f));
 	modelview = glm::scale(modelview, glm::vec3(17.f, 17.f, 1.f));
 	texProgram.setUniformMatrix4f("modelview", modelview);
@@ -164,8 +182,6 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
-	map->render();
-	player->render();
 
 
 
@@ -176,12 +192,18 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);*/
 
+	//Render mapa
+	map->render();
+	//Render jugador
+	player->render();
+	//Render objectes
 	powerUp->render();
 	objectpunts->render();
 	platform->render();
 
 }
 
+//Inicialitzar shaders
 void Scene::initShaders()
 {
 	Shader vShader, fShader;
@@ -217,18 +239,22 @@ void Scene::nextMap(bool next)
 	if (next) ++currentMap;
 	if (currentMap >= maps.size()) currentMap = 0;
 	map = maps[currentMap];
+
+	//Es pasa el mapa als objectes/jugadors
 	player->setTileMap(map);
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
 	platform->setTileMap(map);
 	player->setDash();
 
-
+	//Es posen les posiciones dels objectes/jugadors
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
 
+
+	//Canviar entre diferents mapes
 	switch (currentMap) {
 	case 0:
 		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
