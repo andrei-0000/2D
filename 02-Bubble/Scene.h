@@ -10,6 +10,7 @@
 #include "TexturedQuad.h"
 #include "ObjectPunts.h"
 #include "PowerUp.h"
+#include "Platform.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -42,6 +43,7 @@ private:
 	Player *player;
 	ObjectPunts* objectpunts;
 	PowerUp* powerUp;
+	Platform* platform;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

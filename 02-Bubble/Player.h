@@ -30,6 +30,8 @@ public:
 	void clearDash();
 	void setDeath();
 	void setReappearing();
+	void setPlatform(bool a);
+	bool getPlatform();
 
 	void dash();
 
@@ -55,7 +57,7 @@ private:
 	bool reappearing = false;
 	bool dead = false;
 	bool dying = false;
-
+	bool platformJumping = false;
 };
 
 
