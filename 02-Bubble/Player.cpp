@@ -65,7 +65,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 
 	//Animació de morir mirant cap a la dreta
-	sprite->setAnimationSpeed(DIE_RIGHT, 20);
+	sprite->setAnimationSpeed(DIE_RIGHT, 8);
 	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.f, 0.444f));
 	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.2f, 0.444f));
 	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.4f, 0.444F));
@@ -117,7 +117,7 @@ void Player::update(int deltaTime)
 	sprite->update(deltaTime);
 
 	if (dying) {
-			sprite->changeAnimation(STAND_RIGHT);
+			if(sprite->animation() != DIE_RIGHT) sprite->changeAnimation(DIE_RIGHT);
 		die();
 	}
 
@@ -253,7 +253,7 @@ void Player::update(int deltaTime)
 				bJumping = false;
 				posPlayer.y = startY;
 			}
-			if (jumpAngle == 180)
+			else if (jumpAngle == 180)
 			{
 				bJumping = false;
 				posPlayer.y = startY;
@@ -286,7 +286,7 @@ void Player::update(int deltaTime)
 				platformJumping = false;
 				posPlayer.y = startY;
 			}
-			if (jumpAngle == 180)
+			else if (jumpAngle == 180)
 			{
 				bPlatformJumping = false;
 				platformJumping = false;
@@ -408,6 +408,11 @@ bool Player::getPlatform() {
 	return platformJumping;
 }
 
+bool Player::isDying()
+{
+	return dying;
+}
+
 void Player::dash() {
 	if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 	{
@@ -452,8 +457,8 @@ void Player::dash() {
 }
 
 void Player::die() {
-	if (die_steps > 30) posPlayer.y += 16;
-	if (die_steps < 30) posPlayer.y -= 16;
+	if (die_steps > 50) posPlayer.y -= 10;
+	if (die_steps < 50) posPlayer.y += 16;
 	--die_steps;
 
 	if (die_steps <= 0) {
@@ -464,6 +469,7 @@ void Player::die() {
 }
 
 void Player::reappear() {
+	sprite->changeAnimation(STAND_RIGHT);
 	if (reappearing_steps > 7) posPlayer.y += 15;
 	else if (reappearing_steps < 8) posPlayer.y -= 25;
 	--reappearing_steps;

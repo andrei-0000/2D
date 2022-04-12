@@ -68,6 +68,7 @@ void Scene::init()
 	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa033.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa044.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapa055.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
 
@@ -136,7 +137,7 @@ void Scene::update(int deltaTime)
 	if (cmpf(player->getX(), objectpunts->getX()) && cmpf(player->getY(), objectpunts->getY()))
 	{
 		bool played = PlaySound(TEXT("sounds/coin.wav"), NULL, SND_ASYNC);
-		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
+		if (!player->isDying()) objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
 	}
 
 
@@ -158,13 +159,13 @@ void Scene::update(int deltaTime)
 
 	//Saltar plataforma
 	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 5), (platform->getY()))) {
-		player->setPlatform(true);
+		if (!player->isDying()) player->setPlatform(true);
 		std::cout << "hola" << endl;
 	}
 	else player->setPlatform(false);
 	
 	if (cmpf(player->getX(), final->getX()) && cmpf(player->getY(), final->getY())) {
-		nextMap(true);
+		if (!player->isDying()) nextMap(true);
 	}
 }
 
@@ -300,7 +301,14 @@ void Scene::nextMap(bool next)
 		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
 		platform->setPosition(glm::vec2(6 * map->getTileSize(), 4 * map->getTileSize()));
 		break;
+	case 4:
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 3 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(13 * map->getTileSize(), 10 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(8 * map->getTileSize(), 6 * map->getTileSize()));
+		final->setPosition(glm::vec2(7 * map->getTileSize(), 12 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
 	}
+
 }
 
 

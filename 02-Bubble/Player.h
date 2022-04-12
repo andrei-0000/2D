@@ -32,6 +32,7 @@ public:
 	void setReappearing();
 	void setPlatform(bool a);
 	bool getPlatform();
+	bool isDying();
 
 	void dash();
 
