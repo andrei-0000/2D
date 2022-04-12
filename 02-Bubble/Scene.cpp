@@ -26,6 +26,7 @@ Scene::Scene()
 	powerUp = NULL;
 	objectpunts = NULL;
 	platform = NULL;
+	final = NULL;
 
 }
 
@@ -42,6 +43,8 @@ Scene::~Scene()
 		delete powerUp;
 	if (platform != NULL)
 		delete platform;
+	if (final != NULL)
+		delete final;
 	for (int i = 0; i < 3; i++)
 		if (texQuad[i] != NULL)
 			delete texQuad[i];
@@ -71,6 +74,7 @@ void Scene::init()
 	powerUp = new PowerUp();
 	objectpunts = new ObjectPunts();
 	platform = new Platform();
+	final = new FinalObject();
 
 	//Inicialització de player
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -88,6 +92,13 @@ void Scene::init()
 	//Inicialització de plataforma
 	platform->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	platform->setTileMap(map);
+	platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
+
+	//Inicialització de objecte final
+	final->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	final->setTileMap(map);
+	final->setPosition(glm::vec2(14 * map->getTileSize(), 0 * map->getTileSize()));
+
 
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH - 1), float(SCREEN_HEIGHT - 1), 0.f);
@@ -117,6 +128,7 @@ void Scene::update(int deltaTime)
 	objectpunts->update(deltaTime);
 	powerUp->update(deltaTime);
 	platform->update(deltaTime);
+	final->update(deltaTime);
 
 	//Agafar objecte de puntuació
 	if (cmpf(player->getX(), objectpunts->getX()) && cmpf(player->getY(), objectpunts->getY()))
@@ -148,6 +160,10 @@ void Scene::update(int deltaTime)
 		std::cout << "hola" << endl;
 	}
 	else player->setPlatform(false);
+	
+	if (cmpf(player->getX(), final->getX()) && cmpf(player->getY(), final->getY())) {
+		nextMap(true);
+	}
 }
 
 
@@ -201,6 +217,7 @@ void Scene::render()
 	powerUp->render();
 	objectpunts->render();
 	platform->render();
+	final->render();
 
 }
 
@@ -246,14 +263,15 @@ void Scene::nextMap(bool next)
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
 	platform->setTileMap(map);
+	final->setTileMap(map);
 	player->setDash();
 
 	//Es posen les posiciones dels objectes/jugadors
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
-	platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
-
+	//platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
+	//final->setPosition(glm::vec2(14 * map->getTileSize(), 11 * map->getTileSize()));
 
 	//Canviar entre diferents mapes
 	switch (currentMap) {
@@ -264,6 +282,8 @@ void Scene::nextMap(bool next)
 		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(10 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(15 * map->getTileSize(), 11 * map->getTileSize()));
 		break;
 	}
 }

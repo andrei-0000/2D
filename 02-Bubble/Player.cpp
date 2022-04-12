@@ -117,7 +117,7 @@ void Player::update(int deltaTime)
 	sprite->update(deltaTime);
 
 	if (dying) {
-			sprite->changeAnimation(DIE_RIGHT);
+			sprite->changeAnimation(STAND_RIGHT);
 		die();
 	}
 
