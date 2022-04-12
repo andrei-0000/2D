@@ -12,7 +12,7 @@
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
-#define PLATFORM_HEIGHT 160
+#define PLATFORM_HEIGHT 180
 #define FALL_STEP 4
 
 
@@ -251,7 +251,6 @@ void Player::update(int deltaTime)
 			if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
 
 				bJumping = false;
-				posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
@@ -284,7 +283,6 @@ void Player::update(int deltaTime)
 
 				bPlatformJumping = false;
 				platformJumping = false;
-				posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
