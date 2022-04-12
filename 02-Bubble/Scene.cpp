@@ -223,7 +223,7 @@ void Scene::nextMap(bool next)
 	platform->setTileMap(map);
 	player->setDash();
 
-
+	player->setReappearing();
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
