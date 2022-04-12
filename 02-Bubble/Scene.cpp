@@ -62,11 +62,11 @@ void Scene::init()
 	texQuad[2] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //foreground
 
 	//Posar diferents nivells
-	maps.push_back(TileMap::createTileMap("levels/mapa033.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa044.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa055.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef2.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef6.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef10.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef8.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
 
@@ -302,7 +302,7 @@ void Scene::nextMap(bool next)
 		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
 		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
-		platform->setPosition(glm::vec2(6 * map->getTileSize(), 4 * map->getTileSize()));
+		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
 		break;
 	case 3:
 		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));

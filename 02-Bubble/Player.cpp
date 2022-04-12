@@ -12,7 +12,7 @@
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
-#define PLATFORM_HEIGHT 180
+#define PLATFORM_HEIGHT 170
 #define FALL_STEP 4
 
 
