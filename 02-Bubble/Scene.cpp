@@ -67,6 +67,7 @@ void Scene::init()
 	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa033.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapa044.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
 
@@ -286,6 +287,19 @@ void Scene::nextMap(bool next)
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
 		final->setPosition(glm::vec2(15 * map->getTileSize(), 11 * map->getTileSize()));
 		break;
+	case 2:
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 6 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(9 * map->getTileSize(), 5 * map->getTileSize()));
+		final->setPosition(glm::vec2(19 * map->getTileSize(), 4 * map->getTileSize()));
+		break;
+	case 3:
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(14 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
+		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(6 * map->getTileSize(), 4 * map->getTileSize()));
+		break;
 	}
 }
 
@@ -300,7 +314,7 @@ void Scene::changeMap(int i)
 	objectpunts->setTileMap(map);
 
 
-	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	//objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 

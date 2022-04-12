@@ -135,7 +135,7 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
 		posPlayer.x -= 2;
-		setDash();
+		
 		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x += 2;
@@ -174,7 +174,7 @@ void Player::update(int deltaTime)
 		if(sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
 		posPlayer.x += 2;
-		setDash();
+		
 		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x -= 2;
@@ -314,6 +314,7 @@ void Player::update(int deltaTime)
 			}
 			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
 			{
+				setDash();
 					if (Game::instance().getKey(Keys::Keys::Space))
 					{
 						if (platformJumping) {
