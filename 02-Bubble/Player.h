@@ -25,7 +25,7 @@ public:
 	float getY();
 	bool isDead();
 	void changeDeathStatus(bool b);
-	void changeAnim();
+	void changetoDeadAnim();
 	void setDash();
 	void clearDash();
 	void setDeath();
@@ -58,6 +58,7 @@ private:
 	bool dead = false;
 	bool dying = false;
 	bool platformJumping = false;
+	bool bPlatformJumping = false;
 };
 
 

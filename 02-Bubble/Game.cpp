@@ -5,6 +5,8 @@
 
 void Game::init()
 {
+	AllocConsole();
+	freopen("CONOUT$", "w", stdout);
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	scene.init();
