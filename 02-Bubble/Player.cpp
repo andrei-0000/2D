@@ -12,7 +12,7 @@
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
-#define PLATFORM_HEIGHT 130
+#define PLATFORM_HEIGHT 160
 #define FALL_STEP 4
 
 
@@ -145,8 +145,9 @@ void Player::update(int deltaTime)
 				
 			}
 			else {
-				if (bJumping) {
+				if (bJumping || platformJumping) {
 					stickied = true;
+					platformJumping = false;
 					bJumping = false;
 				}
 			}
@@ -182,8 +183,9 @@ void Player::update(int deltaTime)
 				dying = true;
 			}
 			else {
-				if (bJumping) {
+				if (bJumping || platformJumping) {
 					stickied = true;
+					platformJumping = false;
 					bJumping = false;
 				}
 			}
@@ -228,51 +230,78 @@ void Player::update(int deltaTime)
 		else if(sprite->animation() == MOVE_RIGHT)
 			sprite->changeAnimation(STAND_RIGHT);
 	}
-	if (platformJumping) {
-		if (jumpAngle == 180)
-		{
-			bJumping = false;
-			posPlayer.y = startY;
-		}
-		else
-		{
-			posPlayer.y = int(startY - PLATFORM_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
-			if (jumpAngle > 90)
-				bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
-		}
-	}
 	
-	if(bJumping)
+	if(bJumping || bPlatformJumping)
 	{
-		if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
-		else  if (Game::instance().getKey(Keys::Keys::D)) //dash while jumping
-		{
-			if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
-				dashing = true;
-				dash_direction = "right";
-				dash();
+		if (bJumping) {
+			if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
+			else  if (Game::instance().getKey(Keys::Keys::D)) //dash while jumping
+			{
+				if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
+					dashing = true;
+					dash_direction = "right";
+					dash();
+				}
+				else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
+					dashing = true;
+					dash_direction = "left";
+					dash();
+				}
 			}
-			else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
-				dashing = true;
-				dash_direction = "left";
-				dash();
+			if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
+
+				bJumping = false;
+				posPlayer.y = startY;
+			}
+			if (jumpAngle == 180)
+			{
+				bJumping = false;
+				posPlayer.y = startY;
+			}
+			else
+			{
+				posPlayer.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
+				if (jumpAngle > 90)
+					bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
 			}
 		}
-		if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
-			bJumping = false;
-			posPlayer.y = startY;
+		else {
+			if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
+			else  if (Game::instance().getKey(Keys::Keys::D)) //dash while jumping
+			{
+				if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
+					dashing = true;
+					dash_direction = "right";
+					dash();
+				}
+				else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
+					dashing = true;
+					dash_direction = "left";
+					dash();
+				}
+			}
+			if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
+
+				bPlatformJumping = false;
+				platformJumping = false;
+				posPlayer.y = startY;
+			}
+			if (jumpAngle == 180)
+			{
+				bPlatformJumping = false;
+				platformJumping = false;
+				posPlayer.y = startY;
+			}
+			else
+			{
+				posPlayer.y = int(startY - PLATFORM_HEIGHT * sin(3.14159f * jumpAngle / 180.f));
+				if (jumpAngle > 90)
+					bPlatformJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
+			}
+
+
 		}
-		 if(jumpAngle == 180)
-		{
-			bJumping = false;
-			posPlayer.y = startY;
-		}
-		else
-		{
-			posPlayer.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-			if(jumpAngle > 90)
-				bJumping = !map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y);
-		}
+		
 	}
 	else
 	{
@@ -287,10 +316,20 @@ void Player::update(int deltaTime)
 			{
 					if (Game::instance().getKey(Keys::Keys::Space))
 					{
-						bJumping = true;
-						jumpAngle = 0;
-						posPlayer.y -= 2;
-						startY = posPlayer.y;
+						if (platformJumping) {
+							bJumping = false;
+							bPlatformJumping = true;
+							jumpAngle = 0;
+							posPlayer.y -= 2;
+							startY = posPlayer.y;
+						}
+						else {
+							bJumping = true;
+							jumpAngle = 0;
+							posPlayer.y -= 2;
+							startY = posPlayer.y;
+						}
+						
 						//if(sprite->animation() == (STAND_LEFT || MOVE_LEFT)) sprite->changeAnimation(JUMP_LEFT);
 						//else if (sprite->animation() == (STAND_RIGHT || MOVE_RIGHT)) sprite->changeAnimation(JUMP_RIGHT);
 					}

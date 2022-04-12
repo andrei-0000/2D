@@ -7,7 +7,7 @@
 #include <chrono>
 #include <Windows.h>
 #include  "MMSystem.h"
-
+#include <iostream>
 
 #define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
 #define SCREEN_Y 0 // son els píxels que deixa a dalt de la finestra de joc
@@ -143,8 +143,9 @@ void Scene::update(int deltaTime)
 	//if (player->isDead()) changeMap(currentMap);
 
 	//Saltar plataforma
-	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 1), (platform->getY()))) {
+	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 5), (platform->getY()))) {
 		player->setPlatform(true);
+		std::cout << "hola" << endl;
 	}
 	else player->setPlatform(false);
 }

@@ -58,6 +58,7 @@ private:
 	bool dead = false;
 	bool dying = false;
 	bool platformJumping = false;
+	bool bPlatformJumping = false;
 };
 
 
