@@ -55,6 +55,9 @@ void Game::keyPressed(int key)
 		scene.changeMap(8);
 	if (key == 57) // Tecla número 9
 		scene.changeMap(9);
+	if(key == 102){ //Tecla f (minúscula) per anar a la pantalla final
+		scene.changeMap(10);
+	}
 	if (key == 103) { // Tecla g (minúscula) per a no poder morir amb els tiles de mort
 		if (scene.getActiveDeath()) scene.setActiveDeath(false);
 		else scene.setActiveDeath(true);

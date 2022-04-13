@@ -14,6 +14,7 @@ namespace Keys {
         static constexpr int D = 100;
         static constexpr int G = 103;
         static constexpr int B = 98;
+	static constexpr int F = 102;
 	    static constexpr int _0 = 48;
         static constexpr int _1 = 49;
         static constexpr int _2 = 50;

@@ -75,6 +75,7 @@ void Scene::init()
 	maps.push_back(TileMap::createTileMap("levels/mapadef8.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapadef9.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapadef10.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapafinal.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	
 	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
@@ -187,8 +188,12 @@ void Scene::update(int deltaTime)
 	}
 	else player->setPlatform(false);
 	
+	// Pasar de nivell quan atravesa forat
 	if (cmpf(player->getX(), final->getX()) && cmpf(player->getY(), final->getY())) {
-		if (!player->isDying()) nextMap(true);
+		if (!player->isDying()) {
+			if (currentMap < 10) nextMap(true);
+			else finalPos = true;
+		}
 	}
 }
 
@@ -251,8 +256,11 @@ void Scene::render()
 	objectpunts->render();
 	platform->render();
 	final->render();
-
-	text.render("score: " + to_string(puntuacio), glm::vec2(10, CAMERA_HEIGHT - 20), 32, glm::vec4(1, 1, 1, 1));
+	//Render text de puntuació
+	if(currentMap < 10) text.render("score: " + to_string(puntuacio), glm::vec2(10, CAMERA_HEIGHT - 20), 32, glm::vec4(1, 1, 1, 1));
+	else {
+		if (finalPos) text.render("Final Score: " + to_string(puntuacio), glm::vec2(50, CAMERA_HEIGHT - 250), 64, glm::vec4(1, 1, 1, 1));
+	}
 
 }
 
@@ -412,8 +420,15 @@ void Scene::nextMap(bool next)
 		platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(8 * map->getTileSize(), 1 * map->getTileSize()));
 		break;
+	case 10:
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 12 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
+		final->setPosition(glm::vec2(10 * map->getTileSize(), 8 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 1 * map->getTileSize()));
+		break;
 	}
-
 }
 
 
@@ -507,6 +522,14 @@ void Scene::changeMap(int i)
 		final->setPosition(glm::vec2(14 * map->getTileSize(), 0 * map->getTileSize()));
 		platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(8 * map->getTileSize(), 1 * map->getTileSize()));
+	}
+	else if (i == 10) {
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 12 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
+		final->setPosition(glm::vec2(10 * map->getTileSize(), 8 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 1 * map->getTileSize()));
 	}
 }
 
