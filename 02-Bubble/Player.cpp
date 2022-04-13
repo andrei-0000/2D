@@ -18,7 +18,7 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, DIE_LEFT, DIE_RIGHT,DASH_LEFT,DASH_RIGHT, JUMP_LEFT, JUMP_RIGHT
+	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT, DIE_LEFT, DIE_RIGHT, DASH_LEFT, DASH_RIGHT, JUMP_LEFT, JUMP_RIGHT
 };
 
 
@@ -58,9 +58,9 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 
 	//Animació de morir mirant cap a l'esquerra
 	sprite->setAnimationSpeed(DIE_LEFT, 20);
-	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.6f,0.555f));
-	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.4f,0.555f));
-	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.2f,0.555f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.6f, 0.555f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.4f, 0.555f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.2f, 0.555f));
 	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.f, 0.555f));
 
 
@@ -103,7 +103,7 @@ void Player::init(const glm::ivec2& tileMapPos, ShaderProgram& shaderProgram)
 	sprite->addKeyframe(JUMP_RIGHT, glm::vec2(0.4f, 0.111f));
 	sprite->addKeyframe(JUMP_RIGHT, glm::vec2(0.6f, 0.111f));
 
-	
+
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
@@ -117,7 +117,7 @@ void Player::update(int deltaTime)
 	sprite->update(deltaTime);
 
 	if (dying) {
-			if(sprite->animation() != DIE_RIGHT) sprite->changeAnimation(DIE_RIGHT);
+		if (sprite->animation() != DIE_RIGHT) sprite->changeAnimation(DIE_RIGHT);
 		die();
 	}
 
@@ -130,19 +130,19 @@ void Player::update(int deltaTime)
 	}
 
 
-	else if(Game::instance().getSpecialKey(GLUT_KEY_LEFT))
+	else if (Game::instance().getSpecialKey(GLUT_KEY_LEFT))
 	{
-		if(sprite->animation() != MOVE_LEFT)
+		if (sprite->animation() != MOVE_LEFT)
 			sprite->changeAnimation(MOVE_LEFT);
 		posPlayer.x -= 2;
-		
+
 		if (map->collisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveLeftJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x += 2;
 				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 				sprite->changeAnimation(DIE_LEFT);
 				dying = true;
-				
+
 			}
 			else {
 				if (bJumping || platformJumping) {
@@ -151,9 +151,9 @@ void Player::update(int deltaTime)
 					bJumping = false;
 				}
 			}
-			
+
 		}
-		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
+		if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32)))
 		{
 			if (map->deathCollisionMoveLeft(posPlayer, glm::vec2(32, 32))) {
 				posPlayer.x += 2;
@@ -165,16 +165,16 @@ void Player::update(int deltaTime)
 				posPlayer.x += 2;
 				sprite->changeAnimation(STAND_LEFT);
 			}
-			
+
 		}
 
 	}
-	else if(Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
+	else if (Game::instance().getSpecialKey(GLUT_KEY_RIGHT))
 	{
-		if(sprite->animation() != MOVE_RIGHT)
+		if (sprite->animation() != MOVE_RIGHT)
 			sprite->changeAnimation(MOVE_RIGHT);
 		posPlayer.x += 2;
-		
+
 		if (map->collisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 			if (map->deathCollisionMoveRightJump(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x -= 2;
@@ -190,8 +190,8 @@ void Player::update(int deltaTime)
 				}
 			}
 		}
-			
-		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
+
+		if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 		{
 			if (map->deathCollisionMoveRight(posPlayer, glm::vec2(32, 32))) {
 				posPlayer.x -= 2;
@@ -204,47 +204,52 @@ void Player::update(int deltaTime)
 				sprite->changeAnimation(STAND_RIGHT);
 
 			}
-			
+
 		}
 	}
 
 	//DASH
-	else  if (Game::instance().getKey(Keys::Keys::D))
+	else  if (Game::instance().getKey(Keys::Keys::W))
 	{
 		if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
 			dashing = true;
 			dash_direction = "right";
 			dash();
+			
+
 		}
 		else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
 			dashing = true;
 			dash_direction = "left";
 			dash();
+
 		}
 	}
 
 	else
 	{
-		if(sprite->animation() == MOVE_LEFT)
+		if (sprite->animation() == MOVE_LEFT)
 			sprite->changeAnimation(STAND_LEFT);
-		else if(sprite->animation() == MOVE_RIGHT)
+		else if (sprite->animation() == MOVE_RIGHT)
 			sprite->changeAnimation(STAND_RIGHT);
 	}
-	
-	if(bJumping || bPlatformJumping)
+
+	if (bJumping || bPlatformJumping)
 	{
 		if (bJumping) {
 			if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
-			else  if (Game::instance().getKey(Keys::Keys::D)) //dash while jumping
+			else  if (Game::instance().getKey(Keys::Keys::W)) //dash while jumping
 			{
 				if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
 					dashing = true;
 					dash_direction = "right";
 					dash();
+					sprite->changeAnimation(DASH_RIGHT);
 				}
 				else if (sprite->animation() == STAND_LEFT && can_dash && !dashing) {
 					dashing = true;
 					dash_direction = "left";
+								sprite->changeAnimation(DASH_LEFT);
 					dash();
 				}
 			}
@@ -267,7 +272,7 @@ void Player::update(int deltaTime)
 		}
 		else {
 			if (!stickied) jumpAngle += JUMP_ANGLE_STEP;
-			else  if (Game::instance().getKey(Keys::Keys::D)) //dash while jumping
+			else  if (Game::instance().getKey(Keys::Keys::W)) //dash while jumping
 			{
 				if (sprite->animation() == STAND_RIGHT && can_dash && !dashing) {
 					dashing = true;
@@ -284,6 +289,7 @@ void Player::update(int deltaTime)
 
 				bPlatformJumping = false;
 				platformJumping = false;
+				//posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
@@ -300,41 +306,41 @@ void Player::update(int deltaTime)
 
 
 		}
-		
+
 	}
 	else
 	{
-			if (!stickied) posPlayer.y += FALL_STEP;
-			else posPlayer.y += FALL_STEP/4;
-			if (map->deathCollisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
-				bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
-				sprite->changeAnimation(DIE_RIGHT);
-				dying = true;
-			}
-			if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied) 
+		if (!stickied) posPlayer.y += FALL_STEP;
+		else posPlayer.y += FALL_STEP / 4;
+		if (map->deathCollisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
+			bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
+			sprite->changeAnimation(DIE_RIGHT);
+			dying = true;
+		}
+		if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y) || stickied)
+		{
+			setDash();
+			if (Game::instance().getKey(Keys::Keys::Space))
 			{
-				setDash();
-					if (Game::instance().getKey(Keys::Keys::Space))
-					{
-						if (platformJumping) {
-							bJumping = false;
-							bPlatformJumping = true;
-							jumpAngle = 0;
-							posPlayer.y -= 2;
-							startY = posPlayer.y;
-						}
-						else {
-							bJumping = true;
-							jumpAngle = 0;
-							posPlayer.y -= 2;
-							startY = posPlayer.y;
-						}
-						
-						//if(sprite->animation() == (STAND_LEFT || MOVE_LEFT)) sprite->changeAnimation(JUMP_LEFT);
-						//else if (sprite->animation() == (STAND_RIGHT || MOVE_RIGHT)) sprite->changeAnimation(JUMP_RIGHT);
-					}
-					stickied = false;
+				if (platformJumping) {
+					bJumping = false;
+					bPlatformJumping = true;
+					jumpAngle = 0;
+					posPlayer.y -= 2;
+					startY = posPlayer.y;
+				}
+				else {
+					bJumping = true;
+					jumpAngle = 0;
+					posPlayer.y -= 2;
+					startY = posPlayer.y;
+				}
+
+				//if(sprite->animation() == (STAND_LEFT || MOVE_LEFT)) sprite->changeAnimation(JUMP_LEFT);
+				//else if (sprite->animation() == (STAND_RIGHT || MOVE_RIGHT)) sprite->changeAnimation(JUMP_RIGHT);
 			}
+			stickied = false;
+		}
 	}
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 }
@@ -344,12 +350,12 @@ void Player::render()
 	sprite->render();
 }
 
-void Player::setTileMap(TileMap *tileMap)
+void Player::setTileMap(TileMap* tileMap)
 {
 	map = tileMap;
 }
 
-void Player::setPosition(const glm::vec2 &pos)
+void Player::setPosition(const glm::vec2& pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
@@ -371,7 +377,7 @@ bool Player::isDead()
 }
 
 void Player::changetoDeadAnim() {
-	if(sprite->animation() == STAND_RIGHT || sprite->animation() == MOVE_RIGHT) sprite->changeAnimation(DIE_RIGHT);
+	if (sprite->animation() == STAND_RIGHT || sprite->animation() == MOVE_RIGHT) sprite->changeAnimation(DIE_RIGHT);
 	else if (sprite->animation() == STAND_LEFT || sprite->animation() == MOVE_LEFT) sprite->changeAnimation(DIE_LEFT);
 }
 
@@ -415,7 +421,7 @@ bool Player::isDying()
 void Player::dash() {
 	if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32)))
 	{
-		posPlayer.x -=  12;
+		posPlayer.x -= 12;
 		sprite->changeAnimation(STAND_RIGHT);
 		dashing = false;
 		dash_steps = 0;
@@ -442,14 +448,13 @@ void Player::dash() {
 	}
 
 	if (dash_direction == "left") {
-		if (sprite->animation() == STAND_LEFT) sprite->changeAnimation(DASH_LEFT);
+		
 		posPlayer.x -= 12;
 	}
 	else if (dash_direction == "right") {
-		if (sprite->animation() == STAND_RIGHT) sprite->changeAnimation(DASH_RIGHT);
 		posPlayer.x += 12;
 	}
-	--dash_steps;
+	if (!infinite_dash)--dash_steps;
 	if (dash_steps <= 0) {
 		dash_steps = 0;
 		dashing = false;
@@ -472,7 +477,6 @@ void Player::die() {
 }
 
 void Player::reappear() {
-	dying = false;
 	sprite->changeAnimation(STAND_RIGHT);
 	if (reappearing_steps > 7) posPlayer.y += 15;
 	else if (reappearing_steps < 8) posPlayer.y -= 25;

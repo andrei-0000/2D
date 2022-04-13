@@ -36,6 +36,7 @@ public:
 	int getCurrentMap();
 	void setActiveDeath(bool a);
 	bool getActiveDeath();
+	void infiniteDash();
 
 private:
 	void initShaders();

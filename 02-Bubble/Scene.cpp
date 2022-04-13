@@ -192,7 +192,9 @@ void Scene::update(int deltaTime)
 	if (cmpf(player->getX(), final->getX()) && cmpf(player->getY(), final->getY())) {
 		if (!player->isDying()) {
 			if (currentMap < 10) nextMap(true);
-			else finalPos = true;
+			else {
+				finalPos = true;
+			}
 		}
 	}
 }
@@ -421,6 +423,7 @@ void Scene::nextMap(bool next)
 		powerUp->setPosition(glm::vec2(8 * map->getTileSize(), 1 * map->getTileSize()));
 		break;
 	case 10:
+		bool played3 = PlaySound(TEXT("sounds/completed.wav"), NULL, SND_ASYNC);
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 12 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
 		final->setPosition(glm::vec2(10 * map->getTileSize(), 8 * map->getTileSize()));
@@ -524,6 +527,7 @@ void Scene::changeMap(int i)
 		powerUp->setPosition(glm::vec2(8 * map->getTileSize(), 1 * map->getTileSize()));
 	}
 	else if (i == 10) {
+		bool played3 = PlaySound(TEXT("sounds/completed.wav"), NULL, SND_ASYNC);
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 12 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
 		final->setPosition(glm::vec2(10 * map->getTileSize(), 8 * map->getTileSize()));
@@ -544,6 +548,12 @@ void Scene::setActiveDeath(bool a) {
 }
 bool Scene::getActiveDeath() {
 	return map->getActiveDeath();
+}
+
+void Scene::infiniteDash()
+{
+	if (player->infinite_dash) player->infinite_dash = false;
+	else player->infinite_dash = true;
 }
 
 

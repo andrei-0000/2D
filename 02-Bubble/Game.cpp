@@ -63,6 +63,7 @@ void Game::keyPressed(int key)
 		else scene.setActiveDeath(true);
 	}
 	if(key == 100){ // Tecla d (mimúsucula) per a tenir dash infinit
+		scene.infiniteDash();
 	}
 
 }

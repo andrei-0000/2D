@@ -39,6 +39,7 @@ public:
 	void die();
 
 	void reappear();
+	bool infinite_dash;
 
 private:
 	bool bJumping;
@@ -58,6 +59,7 @@ private:
 	bool reappearing = false;
 	bool dead = false;
 	bool dying = false;
+	
 	bool platformJumping = false;
 	bool bPlatformJumping = false;
 };
