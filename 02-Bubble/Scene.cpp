@@ -192,7 +192,10 @@ void Scene::update(int deltaTime)
 	if (cmpf(player->getX(), final->getX()) && cmpf(player->getY(), final->getY())) {
 		if (!player->isDying()) {
 			if (currentMap < 10) nextMap(true);
-			else finalPos = true;
+			else {
+				finalPos = true;
+				bool played_final = PlaySound(TEXT("sounds/completed.wav"), NULL, SND_ASYNC);
+			}
 		}
 	}
 }

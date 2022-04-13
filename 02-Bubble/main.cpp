@@ -136,13 +136,36 @@ void instruccions_display() {
 
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
-
 	glColor3f(0, 1, 0);
-	glRasterPos3f(-0.35, 0.2, 0);
+	glRasterPos3f(-0.3, 0.8, 0);
+
 	char msg2[] = "CYBERPUNK 1980";
+	char msg3[] = "PRESS KEY LEFT/RIGHT TO GO LEFT/RIGHT";
+	char msg4[] = "PRESS SPACE TO JUMP ";
+	char msg5[] = "PRESS a TO DASH ";
+	char msg6[] = "PRESS KEY LEFT/RIGHT + SPACE TO GO LEFT/RIGHT";
+
 	for (int i = 0; i < strlen(msg2); i++) {
 		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg2[i]);
 	}
+	glColor3f(1, 0, 0);
+	glRasterPos3f(-0.9, 0.4, 0);
+	for (int i = 0; i < strlen(msg3); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg3[i]);
+	}
+	glRasterPos3f(-0.9, 0.2, 0);
+	for (int i = 0; i < strlen(msg4); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg4[i]);
+	}
+	glRasterPos3f(-0.9, 0, 0);
+	for (int i = 0; i < strlen(msg5); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg5[i]);
+	}
+	glRasterPos3f(-0.9, -0.2, 0);
+	for (int i = 0; i < strlen(msg6); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg6[i]);
+	}
+
 	glutSwapBuffers();
 }
 

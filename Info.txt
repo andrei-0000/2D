@@ -29,7 +29,7 @@ Funcionalitats implementades:
 - Part Polish
 	- Menú principal amb jugar, instruccions
 	- Música de fons
-	- Efectes especials de mort i recollida d'objectes
+	- Efectes especials de mort,recollida d'objectes i de mapa final
 	- Capa de background/middleground
 	- Animacions de idle, caminar, saltar, dash, morir i de reviure
 
@@ -37,4 +37,8 @@ Instruccions del joc:
 	1) Executar el executable de la carpeta Binari
 	2) Es veurà un menú principal amb jugar, instruccions i credits
 	3) Prèmer a jugar
-	4) 
+	4) Tecles necessaries:
+		- Tecla espai per a saltat
+		- Tecla direcció esquerra/dreta per a moure's esquerra/dreta respectivament
+		- Tecla a per a dash
+		- Tecla direcció esquerra/dreta + tecla espai per a poder escalar 
