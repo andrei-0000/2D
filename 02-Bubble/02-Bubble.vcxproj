@@ -14,6 +14,7 @@
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="FinalObject.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MenuScreen.h" />
     <ClInclude Include="ObjectPunts.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Player.h" />
@@ -32,6 +33,7 @@
     <ClCompile Include="FinalObject.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MenuScreen.cpp" />
     <ClCompile Include="ObjectPunts.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Player.cpp" />

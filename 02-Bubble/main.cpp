@@ -13,6 +13,8 @@
 
 
 static int prevTime;
+int arc; 
+char** arv;
 
 
 // If a key is pressed this callback is called
@@ -85,16 +87,10 @@ static void idleCallback()
 	}
 }
 
+void playgame(int argc, char** argv) {
+	//int game_id = glutCreateWindow(argv[0]);
 
-int main(int argc, char **argv)
-{
-	// GLUT initialization
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowPosition(100, 100);
-	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-	glutCreateWindow(argv[0]);
+	//glutSetWindow(game_id);
 	glutDisplayFunc(drawCallback);
 	glutIdleFunc(idleCallback);
 	glutKeyboardFunc(keyboardDownCallback);
@@ -107,16 +103,98 @@ int main(int argc, char **argv)
 	// GLEW will take care of OpenGL extension functions
 	glewExperimental = GL_TRUE;
 	glewInit();
-	
+
+
 	// Game instance initialization
 	Game::instance().init();
+
+}
+
+void menu_display() {
+
+	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	glColor3f(0, 1, 0);
+	glRasterPos3f(-0.35, 0.2, 0);
+	char msg2[] = "CYBERPUNK 1980";
+	for (int i = 0; i < strlen(msg2); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg2[i]);
+	}
+	
+	glColor3f(0, 0, 0);
+	glRasterPos3f(-0.3, -0.3, 0);
+	char msg1[] = "Press Right Click!";
+	for (int i = 0; i < strlen(msg1); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, msg1[i]);
+	}
+	glutSwapBuffers();
+}
+
+
+void instruccions_display() {
+
+	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glColor3f(0, 1, 0);
+	glRasterPos3f(-0.35, 0.2, 0);
+	char msg2[] = "CYBERPUNK 1980";
+	for (int i = 0; i < strlen(msg2); i++) {
+		glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, msg2[i]);
+	}
+	glutSwapBuffers();
+}
+
+void my_menu(int id) {
+	int inst;
+	switch (id) {
+	case 0:
+		PlaySound(NULL, NULL, SND_ASYNC);
+		playgame(arc, arv);
+		break;
+	case 1:
+		glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+		glutInitWindowPosition(100, 100);
+		glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+		inst = glutCreateWindow("Instruccions");
+		glutDisplayFunc(instruccions_display);
+		glutSetWindow(inst);
+		break;
+	case 2:
+		exit(0);
+		break;
+	}
+}
+
+int main(int argc, char **argv)
+{
+	// GLUT initialization
+
 	bool played = PlaySound(TEXT("sounds/cyberpunk_music.wav"), NULL, SND_ASYNC);
+	glutInit(&argc, argv);
+	arc = argc;
+	arv = argv;
+	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
+	glutInitWindowPosition(100, 100);
+	glutInitWindowSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+	int menu_id = glutCreateWindow("Menu");
+	glutDisplayFunc(menu_display);
+	glutSetWindow(menu_id);
+	int menu = glutCreateMenu(my_menu);
+	glutAddMenuEntry("Jugar", 0);
+	glutAddMenuEntry("Instruccions", 1);
+	glutAddMenuEntry("Exit", 2);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
 	prevTime = glutGet(GLUT_ELAPSED_TIME);
 	// GLUT gains control of the application
 	glutMainLoop();
 
 	return 0;
 }
+
 
 
 
