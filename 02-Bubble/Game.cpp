@@ -56,6 +56,10 @@ void Game::keyPressed(int key)
 		scene.changeMap(9);
 	if (key == 58) // numero 10
 		scene.changeMap(10);
+	if (key == 103) {
+		if (scene.getActiveDeath()) scene.setActiveDeath(false);
+		else scene.setActiveDeath(true);
+	}
 
 
 }

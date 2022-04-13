@@ -502,5 +502,13 @@ int Scene::getCurrentMap() {
 	return currentMap;
 }
 
+void Scene::setActiveDeath(bool a) {
+	map->setActiveDeath(a);
+
+}
+bool Scene::getActiveDeath() {
+	return map->getActiveDeath();
+}
+
 
 

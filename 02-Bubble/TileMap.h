@@ -43,6 +43,9 @@ public:
 	bool deathCollisionMoveRightJump(const glm::ivec2& pos, const glm::ivec2& size) const;
 	bool deathCollisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const;
 	bool deathCollisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const;
+	void setActiveDeath(bool a);
+	bool getActiveDeath();
+
 	
 private:
 	bool loadLevel(const string &levelFile);
@@ -50,6 +53,7 @@ private:
 
 
 private:
+	bool activeDeath = true;
 	GLuint vao;
 	GLuint vbo;
 	GLint posLocation, texCoordLocation;
