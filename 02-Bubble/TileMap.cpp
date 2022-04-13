@@ -314,108 +314,145 @@ bool TileMap::collisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int
 }
 bool TileMap::deathCollisionMoveLeft(const glm::ivec2& pos, const glm::ivec2& size) const
 {
-	int x, y0, y1;
 
-	x = pos.x / tileSize;
-	y0 = pos.y / tileSize;
-	y1 = (pos.y + size.y - 1) / tileSize;
-	for (int y = y0; y <= y1; y++)
-	{
-		if (map[y * mapSize.x + x] == 18)
-			return true;
+	if (activeDeath) {
+		int x, y0, y1;
+
+		x = pos.x / tileSize;
+		y0 = pos.y / tileSize;
+		y1 = (pos.y + size.y - 1) / tileSize;
+		for (int y = y0; y <= y1; y++)
+		{
+			if (map[y * mapSize.x + x] == 18)
+				return true;
+		}
+
+		return false;
 	}
+	else return false;
 
-	return false;
 }
 
 bool TileMap::deathCollisionMoveRight(const glm::ivec2& pos, const glm::ivec2& size) const
 {
-	int x, y0, y1;
+	if (activeDeath) {
+		int x, y0, y1;
 
-	x = (pos.x + size.x - 1) / tileSize;
-	y0 = pos.y / tileSize;
-	y1 = (pos.y + size.y - 1) / tileSize;
-	for (int y = y0; y <= y1; y++)
-	{
-		if (map[y * mapSize.x + x] == 18)
-			return true;
+		x = (pos.x + size.x - 1) / tileSize;
+		y0 = pos.y / tileSize;
+		y1 = (pos.y + size.y - 1) / tileSize;
+		for (int y = y0; y <= y1; y++)
+		{
+			if (map[y * mapSize.x + x] == 18)
+				return true;
+		}
+
+		return false;
 	}
+	else return false;
 
-	return false;
 }
 
 bool TileMap::deathCollisionMoveRightJump(const glm::ivec2& pos, const glm::ivec2& size) const
 {
-	int x, y, y1;
+	if (activeDeath) {
+		int x, y, y1;
 
-	x = (pos.x + size.x - 1) / tileSize;
-	y = pos.y / tileSize + 1;
-	//y1 = (pos.y + size.y - 1) / tileSize;
-	//for (int y = y0; y <= y1; y++)
-	//{
-	if (map[y * mapSize.x + x] == 18)
-		return true;
-	//}
+		x = (pos.x + size.x - 1) / tileSize;
+		y = pos.y / tileSize + 1;
+		//y1 = (pos.y + size.y - 1) / tileSize;
+		//for (int y = y0; y <= y1; y++)
+		//{
+		if (map[y * mapSize.x + x] == 18)
+			return true;
+		//}
 
-	return false;
+		return false;
+	}
+	else return false;
+
 }
 
 bool TileMap::deathCollisionMoveLeftJump(const glm::ivec2& pos, const glm::ivec2& size) const
 {
-	int x, y, y1;
 
-	x = pos.x / tileSize;
-	y = pos.y / tileSize + 1;
-	//y1 = (pos.y + size.y - 1) / tileSize;
-	//for (int y = y0; y <= y1; y++)
-	//{
-	if (map[y * mapSize.x + x] == 18)
-		return true;
-	//}
+	if (activeDeath) {
+		int x, y, y1;
 
-	return false;
+		x = pos.x / tileSize;
+		y = pos.y / tileSize + 1;
+		//y1 = (pos.y + size.y - 1) / tileSize;
+		//for (int y = y0; y <= y1; y++)
+		//{
+		if (map[y * mapSize.x + x] == 18)
+			return true;
+		//}
+
+		return false;
+	}
+	else return false;
+
 }
 
 bool TileMap::deathCollisionMoveDown(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const
 {
-	int x0, x1, y;
+	if (activeDeath) {
+		int x0, x1, y;
 
-	x0 = pos.x / tileSize;
-	x1 = (pos.x + size.x - 1) / tileSize;
-	y = (pos.y + size.y - 1) / tileSize;
-	for (int x = x0; x <= x1; x++)
-	{
-		if (map[y * mapSize.x + x] == 18)
+		x0 = pos.x / tileSize;
+		x1 = (pos.x + size.x - 1) / tileSize;
+		y = (pos.y + size.y - 1) / tileSize;
+		for (int x = x0; x <= x1; x++)
 		{
-			if (*posY - tileSize * y + size.y <= 4)
+			if (map[y * mapSize.x + x] == 18)
 			{
-				*posY = tileSize * y - size.y;
-				return true;
+				if (*posY - tileSize * y + size.y <= 4)
+				{
+					*posY = tileSize * y - size.y;
+					return true;
+				}
 			}
 		}
-	}
 
-	return false;
+		return false;
+
+	}
+	else return false;
+
 }
 
 bool TileMap::deathCollisionMoveUp(const glm::ivec2& pos, const glm::ivec2& size, int* posY) const
 {
-	int x0, x1, y;
+	if (activeDeath) {
+		int x0, x1, y;
 
-	x0 = pos.x / tileSize;
-	x1 = (pos.x + size.x - 1) / tileSize;
-	y = (pos.y) / tileSize;
-	for (int x = x0; x <= x1; x++)
-	{
-		if (map[y * mapSize.x + x] == 18)
+		x0 = pos.x / tileSize;
+		x1 = (pos.x + size.x - 1) / tileSize;
+		y = (pos.y) / tileSize;
+		for (int x = x0; x <= x1; x++)
 		{
-			return true;
+			if (map[y * mapSize.x + x] == 18)
+			{
+				return true;
+			}
 		}
-	}
 
-	return false;
+		return false;
+
+	}
+	else return false;
+
 }
 
+
+
+void TileMap::setActiveDeath(bool a) {
+	activeDeath = a;
+}
+
+bool TileMap::getActiveDeath() {
+	return activeDeath;
+}
 
 
 

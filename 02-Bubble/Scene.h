@@ -34,6 +34,8 @@ public:
 	void nextMap(bool next);
 	void changeMap(int i);
 	int getCurrentMap();
+	void setActiveDeath(bool a);
+	bool getActiveDeath();
 
 private:
 	void initShaders();
