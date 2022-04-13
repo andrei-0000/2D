@@ -251,7 +251,7 @@ void Player::update(int deltaTime)
 			if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
 
 				bJumping = false;
-				posPlayer.y = startY;
+				//posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
@@ -472,6 +472,7 @@ void Player::die() {
 }
 
 void Player::reappear() {
+	dying = false;
 	sprite->changeAnimation(STAND_RIGHT);
 	if (reappearing_steps > 7) posPlayer.y += 15;
 	else if (reappearing_steps < 8) posPlayer.y -= 25;
