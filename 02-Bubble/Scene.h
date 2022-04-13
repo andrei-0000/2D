@@ -58,6 +58,7 @@ private:
 	Text text;
 	int puntuacio;
 	bool recollit_puntuacio;
+	bool finalPos = false;
 
 };
 

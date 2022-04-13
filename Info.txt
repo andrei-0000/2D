@@ -1,0 +1,40 @@
+Integrants:
+- Andrei Constaintin Popa
+- Alex Urraco Vert
+
+Funcionalitats implementades:
+- Part Bàsica
+	- Els nivells inclouen tiles de colissió, tiles de no colissió (decoració) i tiles de mort
+		- 10 nivells
+			- En les 3 primeres pantalles, es necessita fer ús de un JUMP i un DASH
+			- En les 3 següents, es necessita combinar un JUMP, un DASH i un CLIMB
+			- En les 4 últimes, es necessita caldrà combinar un JUMP i un DASH per agafar un objecte que
+	  	  	  recarregui l’habilitat de DASH, i així poder fer un segon DASH.
+			- Les pantalles 3, 6, 9 i 10,inclouen una molla que el jugador ha de necessàriament
+		 	  fer servir per superar-les.
+	- Funcionalitats de JUMP (saltar), DASH (potenciador de moviment), CLIMB (escalar) i caminar
+	- Objectes de plataforma (per a saltar més), objectes de recarregà de DASH i objectes de puntuació
+	- Text en pantalla per a poder veure la puntuació actual
+	- Tecles de salt de contingut
+		- g (minúscula) per a no poder morir al tocar els tiles de mort
+		- s (minúscula)per a reduir la velocitat del joc
+		- d (minúscula) per a recarregar el dash infinit
+		- tecles númeriques per a saltar a pantalles concretes
+			- 0 salta al nivell 1
+			- 1 salta al nivell 2
+			....
+			- 9 salta al nivell 10
+			- tecla enter salta al següent nivell
+			- f (minúscula) salta a la pantalla final
+- Part Polish
+	- Menú principal amb jugar, instruccions
+	- Música de fons
+	- Efectes especials de mort i recollida d'objectes
+	- Capa de background/middleground
+	- Animacions de idle, caminar, saltar, dash, morir i de reviure
+
+Instruccions del joc:
+	1) Executar el executable de la carpeta Binari
+	2) Es veurà un menú principal amb jugar, instruccions i credits
+	3) Prèmer a jugar
+	4) 
