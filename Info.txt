@@ -31,7 +31,7 @@ Funcionalitats implementades:
 	- Música de fons
 	- Efectes especials de mort,recollida d'objectes i de mapa final
 	- Capa de background/middleground
-	- Animacions de idle, caminar, saltar, dash, morir i de reviure
+	- Animacions de idle, caminar, saltar, morir i de reviure
 
 Instruccions del joc:
 	1) Executar el executable de la carpeta Binari
@@ -40,5 +40,5 @@ Instruccions del joc:
 	4) Tecles necessaries:
 		- Tecla espai per a saltat
 		- Tecla direcció esquerra/dreta per a moure's esquerra/dreta respectivament
-		- Tecla a per a dash
+		- Tecla w per a dash
 		- Tecla direcció esquerra/dreta + tecla espai per a poder escalar 

@@ -393,7 +393,7 @@ void Scene::nextMap(bool next)
 		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
 		break;
 	case 6:
-		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 10 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
@@ -497,7 +497,7 @@ void Scene::changeMap(int i)
 		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
 	}
 	else if (i == 6) {
-		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 8 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
