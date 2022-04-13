@@ -441,9 +441,11 @@ void Player::dash() {
 	}
 
 	if (dash_direction == "left") {
+		if (sprite->animation() == STAND_LEFT) sprite->changeAnimation(DASH_LEFT);
 		posPlayer.x -= 12;
 	}
 	else if (dash_direction == "right") {
+		if (sprite->animation() == STAND_RIGHT) sprite->changeAnimation(DASH_RIGHT);
 		posPlayer.x += 12;
 	}
 	--dash_steps;
@@ -451,6 +453,8 @@ void Player::dash() {
 		dash_steps = 0;
 		dashing = false;
 		can_dash = false;
+		if (sprite->animation() == DASH_RIGHT) sprite->changeAnimation(STAND_RIGHT);
+		else if (sprite->animation() == DASH_LEFT) sprite->changeAnimation(STAND_LEFT);
 	}
 }
 
