@@ -27,6 +27,7 @@ Scene::Scene()
 	objectpunts = NULL;
 	platform = NULL;
 	final = NULL;
+	puntuacio = NULL;
 
 }
 
@@ -58,6 +59,8 @@ void Scene::init()
 
 	initShaders();
 
+	puntuacio = 100;
+
 	texCoords[0] = glm::vec2(0.f, 0.f); texCoords[1] = glm::vec2(4.f, 4.f);
 	texQuad[0] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //background
 	texQuad[1] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //middleground
@@ -69,6 +72,7 @@ void Scene::init()
 	maps.push_back(TileMap::createTileMap("levels/mapa033.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa044.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	maps.push_back(TileMap::createTileMap("levels/mapa055.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapa066.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
 	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
 
@@ -111,6 +115,9 @@ void Scene::init()
 	texs[1].loadFromFile("images/buildings.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
 	texs[2].loadFromFile("images/near.png", TEXTURE_PIXEL_FORMAT_RGBA);  //textura middleground
 
+	if (!text.init("fonts/KarmaFuture.ttf"))
+		cout << "Could not load font!!!" << endl;
+
 	currentTime = 0.0f;
 }
 	
@@ -137,7 +144,11 @@ void Scene::update(int deltaTime)
 	if (cmpf(player->getX(), objectpunts->getX()) && cmpf(player->getY(), objectpunts->getY()))
 	{
 		bool played = PlaySound(TEXT("sounds/coin.wav"), NULL, SND_ASYNC);
-		if (!player->isDying()) objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
+		if (!player->isDying()) {
+			puntuacio += 50;
+			recollit_puntuacio = true;
+			objectpunts->setPosition(glm::vec2(-1 * map->getTileSize(), 0 * map->getTileSize()));
+		}
 	}
 
 
@@ -145,6 +156,11 @@ void Scene::update(int deltaTime)
 	if (player->isDead()) {
 		//bool played1 = PlaySound(TEXT("sounds/death.wav"), NULL, SND_ASYNC);
 		//player->changetoDeadAnim();
+		puntuacio -= 10;
+		if (recollit_puntuacio) {
+			puntuacio -= 50;
+			recollit_puntuacio = false;
+		}
 		nextMap(false);
 		player->changeDeathStatus(false);
 	}
@@ -175,10 +191,17 @@ void Scene::render()
 {
 	glm::mat4 modelview;
 
+	simpleProgram.use();
+	simpleProgram.setUniformMatrix4f("projection", projection);
+	simpleProgram.setUniform4f("color", 0.2f, 0.2f, 0.8f, 1.0f);
+
+
+
 	//Aqui pot estar el problema
 	texProgram.use();
 	texProgram.setUniformMatrix4f("projection", projection);
 	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+
 
 	modelview = glm::mat4(1.0f);
 	modelview = glm::translate(glm::mat4(1.0f), glm::vec3(260.f, 190.f, 0.f));
@@ -198,11 +221,11 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texQuad[2]->render(texs[2]);
 
+
+
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
-
-
 
 
 	texProgram.setUniformMatrix4f("modelview", modelview);
@@ -222,6 +245,8 @@ void Scene::render()
 	platform->render();
 	final->render();
 
+	text.render("score: " + to_string(puntuacio), glm::vec2(10, CAMERA_HEIGHT - 20), 32, glm::vec4(1, 1, 1, 1));
+
 }
 
 //Inicialitzar shaders
@@ -229,14 +254,39 @@ void Scene::initShaders()
 {
 	Shader vShader, fShader;
 
+	vShader.initFromFile(VERTEX_SHADER, "shaders/simple.vert");
+	if (!vShader.isCompiled())
+	{
+		cout << "Vertex Shader Error" << endl;
+		cout << "" << vShader.log() << endl << endl;
+	}
+	fShader.initFromFile(FRAGMENT_SHADER, "shaders/simple.frag");
+	if (!fShader.isCompiled())
+	{
+		cout << "Fragment Shader Error" << endl;
+		cout << "" << fShader.log() << endl << endl;
+	}
+	simpleProgram.init();
+	simpleProgram.addShader(vShader);
+	simpleProgram.addShader(fShader);
+	simpleProgram.link();
+	if (!simpleProgram.isLinked())
+	{
+		cout << "Shader Linking Error" << endl;
+		cout << "" << simpleProgram.log() << endl << endl;
+	}
+	simpleProgram.bindFragmentOutput("outColor");
+
+	vShader.free();
+	fShader.free();
 	vShader.initFromFile(VERTEX_SHADER, "shaders/texture.vert");
-	if(!vShader.isCompiled())
+	if (!vShader.isCompiled())
 	{
 		cout << "Vertex Shader Error" << endl;
 		cout << "" << vShader.log() << endl << endl;
 	}
 	fShader.initFromFile(FRAGMENT_SHADER, "shaders/texture.frag");
-	if(!fShader.isCompiled())
+	if (!fShader.isCompiled())
 	{
 		cout << "Fragment Shader Error" << endl;
 		cout << "" << fShader.log() << endl << endl;
@@ -245,15 +295,15 @@ void Scene::initShaders()
 	texProgram.addShader(vShader);
 	texProgram.addShader(fShader);
 	texProgram.link();
-	if(!texProgram.isLinked())
+	if (!texProgram.isLinked())
 	{
 		cout << "Shader Linking Error" << endl;
 		cout << "" << texProgram.log() << endl << endl;
 	}
 	texProgram.bindFragmentOutput("outColor");
-	vShader.free();
-	fShader.free();
 }
+
+
 
 void Scene::nextMap(bool next)
 {
@@ -307,6 +357,14 @@ void Scene::nextMap(bool next)
 		objectpunts->setPosition(glm::vec2(8 * map->getTileSize(), 6 * map->getTileSize()));
 		final->setPosition(glm::vec2(7 * map->getTileSize(), 12 * map->getTileSize()));
 		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		break;
+	case 5:
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 12 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(9 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(18 * map->getTileSize(), 5 * map->getTileSize()));
+		final->setPosition(glm::vec2(0 * map->getTileSize(), 2 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		break;
 	}
 
 }

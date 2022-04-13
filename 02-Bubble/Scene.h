@@ -12,6 +12,10 @@
 #include "PowerUp.h"
 #include "Platform.h"
 #include "FinalObject.h"
+#include "Text.h"
+
+#define CAMERA_WIDTH 640
+#define CAMERA_HEIGHT 480
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -46,9 +50,12 @@ private:
 	PowerUp* powerUp;
 	Platform* platform;
 	FinalObject* final;
-	ShaderProgram texProgram;
+	ShaderProgram texProgram, simpleProgram;
 	float currentTime;
 	glm::mat4 projection;
+	Text text;
+	int puntuacio;
+	bool recollit_puntuacio;
 
 };
 

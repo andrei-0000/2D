@@ -48,7 +48,7 @@ private:
 	Sprite *sprite;
 	TileMap *map;
 	bool can_dash = true;
-	int dash_steps = 8;
+	int dash_steps = 10;
 	int die_steps = 60;
 	int reappearing_steps = 15;
 	string dash_direction;

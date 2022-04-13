@@ -251,12 +251,12 @@ void Player::update(int deltaTime)
 			if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
 
 				bJumping = false;
-				posPlayer.y = startY;
+				//posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
 				bJumping = false;
-				posPlayer.y = startY;
+				//posPlayer.y = startY;
 			}
 			else
 			{
@@ -284,13 +284,13 @@ void Player::update(int deltaTime)
 
 				bPlatformJumping = false;
 				platformJumping = false;
-				posPlayer.y = startY;
+				//posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
 				bPlatformJumping = false;
 				platformJumping = false;
-				posPlayer.y = startY;
+				//posPlayer.y = startY;
 			}
 			else
 			{
@@ -380,7 +380,7 @@ void Player::setDash()
 {
 	dashing = false;
 	can_dash = true;
-	dash_steps = 8;
+	dash_steps = 10;
 }
 
 void Player::clearDash()
