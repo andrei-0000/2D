@@ -19,6 +19,11 @@ namespace Keys {
         static constexpr int _3 = 51;
         static constexpr int _4 = 52;
         static constexpr int _5 = 53;
+ 	  static constexpr int _6 = 54;
+	  static constexpr int _7 = 55;
+ 	  static constexpr int _8 = 56;
+ 	  static constexpr int _9 = 57;
+ 	  static constexpr int _10 = 58;
         static constexpr int Space = 32;
         static constexpr int Esc = 27;
         static constexpr int ArrowUp = GLUT_KEY_UP;

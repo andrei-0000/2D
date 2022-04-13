@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include "Game.h"
+#include <iostream>
 
 
 void Game::init()
@@ -34,6 +35,29 @@ void Game::keyPressed(int key)
 		scene.nextMap(true);
 	if (key == 90)
 		timeSlow = !timeSlow;
+	if (key == 49) // numero 1
+		scene.changeMap(1);
+	//std::cout << "1" << endl;
+	if (key == 50) // numero 2
+		scene.changeMap(2);
+	if (key == 51) // numero 3
+		scene.changeMap(3);
+	if (key == 52) // numero 4
+		scene.changeMap(4);
+	if (key == 53) // numero 5
+		scene.changeMap(5);
+	if (key == 54) // numero 6
+		scene.changeMap(6);
+	if (key == 55) // numero 7
+		scene.changeMap(7);
+	if (key == 56) // numero 8
+		scene.changeMap(8);
+	if (key == 57) // numero 9
+		scene.changeMap(9);
+	if (key == 58) // numero 10
+		scene.changeMap(10);
+
+
 }
 
 void Game::keyReleased(int key)

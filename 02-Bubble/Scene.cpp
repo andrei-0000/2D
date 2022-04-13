@@ -12,8 +12,6 @@
 #define SCREEN_X 0 // son els píxels que deixa a l'esquerra de la finestra de joc
 #define SCREEN_Y 0 // son els píxels que deixa a dalt de la finestra de joc
 #define COMPARE_DIFF 3.0
-#define INIT_PLAYER_X_TILES 1
-#define INIT_PLAYER_Y_TILES 11 //posicio del player al spawnejar
 
 
 Scene::Scene()
@@ -67,12 +65,16 @@ void Scene::init()
 	texQuad[2] = TexturedQuad::createTexturedQuad(geom, texCoords, texProgram);  //foreground
 
 	//Posar diferents nivells
-	maps.push_back(TileMap::createTileMap("levels/mapa11.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa022.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa033.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa044.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa055.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
-	maps.push_back(TileMap::createTileMap("levels/mapa066.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef1.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef2.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef3.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef4.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef5.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef6.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef8.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef9.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	maps.push_back(TileMap::createTileMap("levels/mapadef10.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram));
+	
 	currentMap = 0; //començar per el nivell 0
 	map = maps[currentMap];
 
@@ -83,28 +85,33 @@ void Scene::init()
 	platform = new Platform();
 	final = new FinalObject();
 
+
 	//Inicialització de player
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setTileMap(map);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setPosition(glm::vec2(1 * map->getTileSize(), 6 * map->getTileSize()));
+
 
 	//Inicialització d'objecte que recarrega dash
 	powerUp->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 	powerUp->setTileMap(map);
 
 	//Inicialització d'objectes de puntuació
 	objectpunts->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	objectpunts->setPosition(glm::vec2(9 * map->getTileSize(), 5 * map->getTileSize()));
 	objectpunts->setTileMap(map);
 
 	//Inicialització de plataforma
 	platform->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	platform->setTileMap(map);
-	platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
+	platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 
 	//Inicialització de objecte final
 	final->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
 	final->setTileMap(map);
-	final->setPosition(glm::vec2(14 * map->getTileSize(), 0 * map->getTileSize()));
+	final->setPosition(glm::vec2(19 * map->getTileSize(), 4 * map->getTileSize()));
 
 
 
@@ -176,7 +183,6 @@ void Scene::update(int deltaTime)
 	//Saltar plataforma
 	if (cmpf(player->getX(), platform->getX()) && cmpf((player->getY() + 5), (platform->getY()))) {
 		if (!player->isDying()) player->setPlatform(true);
-		std::cout << "hola" << endl;
 	}
 	else player->setPlatform(false);
 	
@@ -318,7 +324,6 @@ void Scene::nextMap(bool next)
 	platform->setTileMap(map);
 	final->setTileMap(map);
 	player->setDash();
-
 	player->setReappearing();
 	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
@@ -329,41 +334,74 @@ void Scene::nextMap(bool next)
 	//Canviar entre diferents mapes
 	switch (currentMap) {
 	case 0:
-		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
-		break;
-	case 1:
-		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
-		powerUp->setPosition(glm::vec2(10 * map->getTileSize(), 11 * map->getTileSize()));
-		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
-		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
-		final->setPosition(glm::vec2(15 * map->getTileSize(), 11 * map->getTileSize()));
-		break;
-	case 2:
 		player->setPosition(glm::vec2(1 * map->getTileSize(), 6 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(9 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
 		final->setPosition(glm::vec2(19 * map->getTileSize(), 4 * map->getTileSize()));
 		break;
+	case 1:
+		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		final->setPosition(glm::vec2(16 * map->getTileSize(), 11 * map->getTileSize()));
+		break;
+	case 2:
+		player->setPosition(glm::vec2(14 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(3 * map->getTileSize(), 7 * map->getTileSize()));
+		platform->setPosition(glm::vec2(15 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(1 * map->getTileSize(), 3 * map->getTileSize()));
+		break;
 	case 3:
-		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
-		powerUp->setPosition(glm::vec2(14 * map->getTileSize(), 4 * map->getTileSize()));
-		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
-		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
-		platform->setPosition(glm::vec2(6 * map->getTileSize(), 4 * map->getTileSize()));
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 9 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		final->setPosition(glm::vec2(6 * map->getTileSize(), 0 * map->getTileSize()));
 		break;
 	case 4:
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 2 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(11 * map->getTileSize(), 10 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		final->setPosition(glm::vec2(18 * map->getTileSize(), 0 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
+		break;
+	case 5:
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
+		break;
+	case 6:
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 3 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(13 * map->getTileSize(), 10 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(8 * map->getTileSize(), 6 * map->getTileSize()));
 		final->setPosition(glm::vec2(7 * map->getTileSize(), 12 * map->getTileSize()));
 		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
 		break;
-	case 5:
-		player->setPosition(glm::vec2(1 * map->getTileSize(), 12 * map->getTileSize()));
+	case 7:
+		player->setPosition(glm::vec2(3 * map->getTileSize(), 12 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(9 * map->getTileSize(), 4 * map->getTileSize()));
-		objectpunts->setPosition(glm::vec2(18 * map->getTileSize(), 5 * map->getTileSize()));
-		final->setPosition(glm::vec2(0 * map->getTileSize(), 2 * map->getTileSize()));
-		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(7 * map->getTileSize(), 9 * map->getTileSize()));
+		final->setPosition(glm::vec2(10 * map->getTileSize(), 9 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		platform->setPosition(glm::vec2(2 * map->getTileSize(), 13 * map->getTileSize()));
+		break;
+	case 8:
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(16 * map->getTileSize(), 5 * map->getTileSize()));
+		final->setPosition(glm::vec2(14 * map->getTileSize(), 0 * map->getTileSize()));
+		platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(8 * map->getTileSize(), 1 * map->getTileSize()));
 		break;
 	}
 
@@ -372,34 +410,93 @@ void Scene::nextMap(bool next)
 
 void Scene::changeMap(int i)
 {
-	++currentMap;
-	if (i >= maps.size() || i < 0) currentMap = 0;
+	currentMap = i - 1;
 	map = maps[currentMap];
 	player->setTileMap(map);
 	powerUp->setTileMap(map);
 	objectpunts->setTileMap(map);
+	platform->setTileMap(map);
+	final->setTileMap(map);
+	player->setDash();
+	player->setReappearing();
 
-
-	//objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
-	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
-	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
-
-	switch (currentMap) {
-	case 0:
-		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-		break;
-	case 1:
-		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
-		powerUp->setPosition(glm::vec2(10 * map->getTileSize(), 11 * map->getTileSize()));
-		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
-		break;
-	case 2:
+	if (i == 1) {
 		player->setPosition(glm::vec2(1 * map->getTileSize(), 6 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
-		objectpunts->setPosition(glm::vec2(5 * map->getTileSize(), 9 * map->getTileSize()));
-		break;
+		objectpunts->setPosition(glm::vec2(9 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(19 * map->getTileSize(), 4 * map->getTileSize()));
+	}
+	else if (i == 2) {
+		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		final->setPosition(glm::vec2(16 * map->getTileSize(), 11 * map->getTileSize()));
+	}
+	else if (i == 3) {
+		player->setPosition(glm::vec2(14 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(3 * map->getTileSize(), 7 * map->getTileSize()));
+		platform->setPosition(glm::vec2(15 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(1 * map->getTileSize(), 3 * map->getTileSize()));
+
+	}
+	else if (i == 4) {
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 9 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		final->setPosition(glm::vec2(6 * map->getTileSize(), 0 * map->getTileSize()));
+	}
+	else if (i == 5) {
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 2 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(11 * map->getTileSize(), 10 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		final->setPosition(glm::vec2(18 * map->getTileSize(), 0 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
+	}
+	else if (i == 6) {
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
+	}
+	//else if (i == 7) {
+
+
+	//}
+	else if (i == 8) {
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 3 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(13 * map->getTileSize(), 10 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(8 * map->getTileSize(), 6 * map->getTileSize()));
+		final->setPosition(glm::vec2(7 * map->getTileSize(), 12 * map->getTileSize()));
+		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+	}
+	else if (i == 9) {
+		player->setPosition(glm::vec2(3 * map->getTileSize(), 12 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(9 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(7 * map->getTileSize(), 9 * map->getTileSize()));
+		final->setPosition(glm::vec2(10 * map->getTileSize(), 9 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+		platform->setPosition(glm::vec2(2 * map->getTileSize(), 13 * map->getTileSize()));
+	}
+	else if (i == 10) {
+		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(16 * map->getTileSize(), 5 * map->getTileSize()));
+		final->setPosition(glm::vec2(14 * map->getTileSize(), 0 * map->getTileSize()));
+		platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(8 * map->getTileSize(), 1 * map->getTileSize()));
 	}
 }
+
 
 int Scene::getCurrentMap() {
 	return currentMap;

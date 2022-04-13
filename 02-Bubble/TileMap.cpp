@@ -208,8 +208,7 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	if ((x < 0)) return true;
 	for(int y=y0; y<=y1; y++) //bucle per a veure si hi ha algun tros de la caixa que colisiona
 	{
-		
-		    if(map[y*mapSize.x+x] != 0) //si es != 0 significa que hi ha un tile i per tant retorna true
+		   if(map[y*mapSize.x+x] != 0&& map[y*mapSize.x+x] != 12 && map[y * mapSize.x + x] != 13) //si es != 0 significa que hi ha un tile i per tant retorna true
 			return true;
 	}
 	

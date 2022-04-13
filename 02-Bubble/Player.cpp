@@ -12,7 +12,7 @@
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
-#define PLATFORM_HEIGHT 160
+#define PLATFORM_HEIGHT 170
 #define FALL_STEP 4
 
 
@@ -251,7 +251,7 @@ void Player::update(int deltaTime)
 			if (map->collisionMoveUp(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) {
 
 				bJumping = false;
-				//posPlayer.y = startY;
+				posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
@@ -284,7 +284,6 @@ void Player::update(int deltaTime)
 
 				bPlatformJumping = false;
 				platformJumping = false;
-				//posPlayer.y = startY;
 			}
 			else if (jumpAngle == 180)
 			{
@@ -443,9 +442,11 @@ void Player::dash() {
 	}
 
 	if (dash_direction == "left") {
+		if (sprite->animation() == STAND_LEFT) sprite->changeAnimation(DASH_LEFT);
 		posPlayer.x -= 12;
 	}
 	else if (dash_direction == "right") {
+		if (sprite->animation() == STAND_RIGHT) sprite->changeAnimation(DASH_RIGHT);
 		posPlayer.x += 12;
 	}
 	--dash_steps;
@@ -453,6 +454,8 @@ void Player::dash() {
 		dash_steps = 0;
 		dashing = false;
 		can_dash = false;
+		if (sprite->animation() == DASH_RIGHT) sprite->changeAnimation(STAND_RIGHT);
+		else if (sprite->animation() == DASH_LEFT) sprite->changeAnimation(STAND_LEFT);
 	}
 }
 
