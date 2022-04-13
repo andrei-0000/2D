@@ -35,25 +35,25 @@ void Game::keyPressed(int key)
 		scene.nextMap(true);
 	if (key == 115) // Tecla s (minúscula) per a reduir la velocitat del joc
 		timeSlow = !timeSlow;
-	if (key == 48) // numero 0
+	if (key == 48) // Tecla número 0
 		scene.changeMap(0);
-	if (key == 49) // numero 1
+	if (key == 49) // Tecla número 1
 		scene.changeMap(1);
-	if (key == 50) // numero 2
+	if (key == 50) // Tecla número 2
 		scene.changeMap(2);
-	if (key == 51) // numero 3
+	if (key == 51) // Tecla número 3
 		scene.changeMap(3);
-	if (key == 52) // numero 4
+	if (key == 52) // Tecla número 4
 		scene.changeMap(4);
-	if (key == 53) // numero 5
+	if (key == 53) //Tecla número 5
 		scene.changeMap(5);
-	if (key == 54) // numero 6
+	if (key == 54) // Tecla número 6
 		scene.changeMap(6);
-	if (key == 55) // numero 7
+	if (key == 55) // Tecla número 7
 		scene.changeMap(7);
-	if (key == 56) // numero 8
+	if (key == 56) // Tecla número 8
 		scene.changeMap(8);
-	if (key == 57) // numero 9
+	if (key == 57) // Tecla número 9
 		scene.changeMap(9);
 	if (key == 103) { // Tecla g (minúscula) per a no poder morir amb els tiles de mort
 		if (scene.getActiveDeath()) scene.setActiveDeath(false);
