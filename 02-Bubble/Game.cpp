@@ -6,8 +6,8 @@
 
 void Game::init()
 {
-	AllocConsole();
-	freopen("CONOUT$", "w", stdout);
+	AllocConsole(); // Per a poder fer couts
+	freopen("CONOUT$", "w", stdout); // Per a poder fer couts
 	bPlay = true;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	scene.init();
@@ -31,13 +31,14 @@ void Game::keyPressed(int key)
 	if(key == 27) // Escape code
 		bPlay = false;
 	keys[key] = true;
-	if (key == 13)
+	if (key == 13) // Tecla Enter per a pasar al següent nivell
 		scene.nextMap(true);
-	if (key == 90)
+	if (key == 115) // Tecla s (minúscula) per a reduir la velocitat del joc
 		timeSlow = !timeSlow;
+	if (key == 48) // numero 0
+		scene.changeMap(0);
 	if (key == 49) // numero 1
 		scene.changeMap(1);
-	//std::cout << "1" << endl;
 	if (key == 50) // numero 2
 		scene.changeMap(2);
 	if (key == 51) // numero 3
@@ -54,13 +55,12 @@ void Game::keyPressed(int key)
 		scene.changeMap(8);
 	if (key == 57) // numero 9
 		scene.changeMap(9);
-	if (key == 58) // numero 10
-		scene.changeMap(10);
-	if (key == 103) {
+	if (key == 103) { // Tecla g (minúscula) per a no poder morir amb els tiles de mort
 		if (scene.getActiveDeath()) scene.setActiveDeath(false);
 		else scene.setActiveDeath(true);
 	}
-
+	if(key == 100){ // Tecla d (mimúsucula) per a tenir dash infinit
+	}
 
 }
 

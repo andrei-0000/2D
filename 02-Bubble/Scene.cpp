@@ -326,9 +326,9 @@ void Scene::nextMap(bool next)
 	final->setTileMap(map);
 	player->setDash();
 	player->setReappearing();
-	objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
-	powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
-	player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	//objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	//powerUp->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
+	//player->setPosition(glm::vec2(1 * map->getTileSize(), 1 * map->getTileSize()));
 	//platform->setPosition(glm::vec2(13 * map->getTileSize(), 11 * map->getTileSize()));
 	//final->setPosition(glm::vec2(14 * map->getTileSize(), 11 * map->getTileSize()));
 
@@ -419,7 +419,7 @@ void Scene::nextMap(bool next)
 
 void Scene::changeMap(int i)
 {
-	currentMap = i - 1;
+	currentMap = i;
 	map = maps[currentMap];
 	player->setTileMap(map);
 	powerUp->setTileMap(map);
@@ -429,7 +429,7 @@ void Scene::changeMap(int i)
 	player->setDash();
 	player->setReappearing();
 
-	if (i == 1) {
+	if (i == 0) {
 		player->setPosition(glm::vec2(1 * map->getTileSize(), 6 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(9 * map->getTileSize(), 5 * map->getTileSize()));
@@ -437,7 +437,7 @@ void Scene::changeMap(int i)
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
 		final->setPosition(glm::vec2(19 * map->getTileSize(), 4 * map->getTileSize()));
 	}
-	else if (i == 2) {
+	else if (i == 1) {
 		player->setPosition(glm::vec2(8 * map->getTileSize(), 11 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(4 * map->getTileSize(), 11 * map->getTileSize()));
@@ -445,7 +445,7 @@ void Scene::changeMap(int i)
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 		final->setPosition(glm::vec2(16 * map->getTileSize(), 11 * map->getTileSize()));
 	}
-	else if (i == 3) {
+	else if (i == 2) {
 		player->setPosition(glm::vec2(14 * map->getTileSize(), 11 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(3 * map->getTileSize(), 7 * map->getTileSize()));
@@ -454,7 +454,7 @@ void Scene::changeMap(int i)
 		final->setPosition(glm::vec2(1 * map->getTileSize(), 3 * map->getTileSize()));
 
 	}
-	else if (i == 4) {
+	else if (i == 3) {
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 9 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(1 * map->getTileSize(), 5 * map->getTileSize()));
@@ -462,13 +462,21 @@ void Scene::changeMap(int i)
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 		final->setPosition(glm::vec2(6 * map->getTileSize(), 0 * map->getTileSize()));
 	}
-	else if (i == 5) {
+	else if (i == 4) {
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 2 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(11 * map->getTileSize(), 10 * map->getTileSize()));
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 		final->setPosition(glm::vec2(18 * map->getTileSize(), 0 * map->getTileSize()));
 		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 5 * map->getTileSize()));
+	}
+	else if (i == 5) {
+		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
+		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
+		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
+		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
+		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
+		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
 	}
 	else if (i == 6) {
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
@@ -479,21 +487,13 @@ void Scene::changeMap(int i)
 		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
 	}
 	else if (i == 7) {
-		player->setPosition(glm::vec2(0 * map->getTileSize(), 11 * map->getTileSize()));
-		powerUp->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
-		objectpunts->setPosition(glm::vec2(0 * map->getTileSize(), 1 * map->getTileSize()));
-		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, true);
-		final->setPosition(glm::vec2(19 * map->getTileSize(), 5 * map->getTileSize()));
-		platform->setPosition(glm::vec2(6 * map->getTileSize(), 5 * map->getTileSize()));
-	}
-	else if (i == 8) {
 		player->setPosition(glm::vec2(0 * map->getTileSize(), 3 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(13 * map->getTileSize(), 10 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(8 * map->getTileSize(), 6 * map->getTileSize()));
 		final->setPosition(glm::vec2(7 * map->getTileSize(), 12 * map->getTileSize()));
 		platform->setPosition(glm::vec2(-1 * map->getTileSize(), 4 * map->getTileSize()));
 	}
-	else if (i == 9) {
+	else if (i == 8) {
 		player->setPosition(glm::vec2(3 * map->getTileSize(), 12 * map->getTileSize()));
 		powerUp->setPosition(glm::vec2(9 * map->getTileSize(), 4 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(7 * map->getTileSize(), 9 * map->getTileSize()));
@@ -501,7 +501,7 @@ void Scene::changeMap(int i)
 		final->changeSprite(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 		platform->setPosition(glm::vec2(2 * map->getTileSize(), 13 * map->getTileSize()));
 	}
-	else if (i == 10) {
+	else if (i == 9) {
 		player->setPosition(glm::vec2(1 * map->getTileSize(), 11 * map->getTileSize()));
 		objectpunts->setPosition(glm::vec2(16 * map->getTileSize(), 5 * map->getTileSize()));
 		final->setPosition(glm::vec2(14 * map->getTileSize(), 0 * map->getTileSize()));
